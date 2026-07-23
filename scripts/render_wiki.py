@@ -177,25 +177,11 @@ def build() -> None:
     cur_totals = totals(latest)
     prev_totals = totals(prev) if prev else None
 
-    # trend series
-    trend_dates = [p["date"] for p in polls[-12:]]
-    trend_series = {
-        "GH stars": [totals(p)["stars"] for p in polls[-12:]],
-        "Zenodo downloads": [totals(p)["zenodo_downloads"] for p in polls[-12:]],
-        "YouTube views": [totals(p)["youtube_views"] for p in polls[-12:]],
-    }
-
     parts: list[str] = []
     parts.append(f"# CCP-volumeEM Impact\n")
     parts.append(f"_Last polled: **{latest['date']}** · {len(polls)} poll(s) in history_\n")
     parts.append("## Totals\n")
     parts.append(totals_table(cur_totals, prev_totals))
-
-    if len(polls) > 1:
-        parts.append("\n## Trends (last 12 polls)\n")
-        chart = mermaid_line("Impact over time", trend_dates, trend_series)
-        if chart:
-            parts.append(chart)
 
     parts.append("\n## GitHub repos\n")
     parts.append(gh_table(latest.get("github", {}).get("repos", []) or []))
