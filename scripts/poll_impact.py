@@ -37,12 +37,23 @@ ZENODO_COMMUNITY = "ccp-volume-em"
 YT_HANDLE = "CCP-volumeEM"
 
 TODAY = date.today().isoformat()
-UA = {"User-Agent": "ccp-volumeem-impact-tracker/1.0"}
+UA = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) impact-tracker/1.0 Safari/537.36"
+    ),
+    "Accept": "application/json",
+}
 TIMEOUT = 30
 
 
 def _get(url: str, headers: dict[str, str] | None = None) -> Any:
     r = requests.get(url, headers={**UA, **(headers or {})}, timeout=TIMEOUT)
+    if not r.ok:
+        # Surface the response body — many APIs (Zenodo/InvenioRDM included)
+        # return a JSON explanation of what was wrong with the request.
+        body = r.text[:500].replace("\n", " ")
+        print(f"    HTTP {r.status_code} body: {body}", flush=True)
     r.raise_for_status()
     return r.json()
 
