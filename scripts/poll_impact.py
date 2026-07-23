@@ -83,12 +83,29 @@ def poll_github() -> list[dict]:
 
 # ---------- Zenodo ----------
 def poll_zenodo() -> list[dict]:
+    """Fetch all records in the Zenodo community.
+
+    Uses the dedicated community-records endpoint (InvenioRDM), which is
+    the canonical way to enumerate a community's records; falls back to
+    the legacy ?communities= filter if that endpoint 404s.
+    """
     records: list[dict] = []
     page = 1
+    base = f"https://zenodo.org/api/communities/{ZENODO_COMMUNITY}/records"
     while True:
-        data = _get(
-            f"https://zenodo.org/api/records?communities={ZENODO_COMMUNITY}&size=100&page={page}"
-        )
+        try:
+            data = _get(f"{base}?size=100&page={page}")
+        except requests.HTTPError as e:
+            if e.response is not None and e.response.status_code == 404 and page == 1:
+                # fall back to legacy filter
+                print(f"  Zenodo: community endpoint 404, falling back to legacy filter")
+                base = f"https://zenodo.org/api/records"
+                data = _get(f"{base}?communities={ZENODO_COMMUNITY}&size=100&page={page}")
+            else:
+                raise
+        total = (data.get("hits", {}) or {}).get("total")
+        if total is not None and page == 1:
+            print(f"  Zenodo: API reports {total} total records in community")
         hits = data.get("hits", {}).get("hits", [])
         if not hits:
             break
