@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+.venv/
+wiki_output/

@@ -1,0 +1,66 @@
+name: Weekly impact poll
+
+on:
+  schedule:
+    # Every Monday at 08:00 UTC
+    - cron: "0 8 * * 1"
+  workflow_dispatch: {}  # allow manual runs
+
+permissions:
+  contents: write  # commit updated data/history.json back to the repo
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Poll sources
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          # GITHUB_TOKEN is auto-provided; passing it lifts the anonymous 60/hr rate limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/poll_impact.py
+
+      - name: Render wiki markdown
+        run: python scripts/render_wiki.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/history.json
+          if git diff --cached --quiet; then
+            echo "No data changes to commit"
+          else
+            git commit -m "Weekly impact poll: $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Push report to wiki
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          # Wiki is a separate git repo; must have been initialised (create Home page once in browser).
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.wiki.git" wiki
+          cp wiki_output/*.md wiki/
+          cd wiki
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --cached --quiet; then
+            echo "No wiki changes to commit"
+          else
+            git commit -m "Update impact report: $(date -u +%Y-%m-%d)"
+            git push
+          fi
