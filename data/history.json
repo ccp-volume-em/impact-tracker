@@ -1,1 +1,87 @@
-{"polls": []}
+{
+  "polls": [
+    {
+      "date": "2026-07-23",
+      "github": {
+        "repos": [
+          {
+            "name": "muvis-align",
+            "url": "https://github.com/ccp-volume-em/muvis-align",
+            "stars": 6,
+            "forks": 0,
+            "watchers": 6,
+            "open_issues": 5,
+            "size_kb": 47841,
+            "pushed_at": "2026-07-21T16:56:35Z",
+            "archived": false,
+            "description": "Image registration using multiview-stitcher"
+          },
+          {
+            "name": "guide",
+            "url": "https://github.com/ccp-volume-em/guide",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 2,
+            "size_kb": 731,
+            "pushed_at": "2026-07-03T12:10:04Z",
+            "archived": false,
+            "description": "Community good practice guide"
+          },
+          {
+            "name": "unstitched-tiles-storage",
+            "url": "https://github.com/ccp-volume-em/unstitched-tiles-storage",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "open_issues": 0,
+            "size_kb": 61,
+            "pushed_at": "2026-03-14T10:28:03Z",
+            "archived": false,
+            "description": null
+          },
+          {
+            "name": "omexml_notebooks",
+            "url": "https://github.com/ccp-volume-em/omexml_notebooks",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 10,
+            "pushed_at": "2026-03-13T10:16:09Z",
+            "archived": false,
+            "description": null
+          },
+          {
+            "name": "show-and-tell",
+            "url": "https://github.com/ccp-volume-em/show-and-tell",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "open_issues": 0,
+            "size_kb": 4034,
+            "pushed_at": "2026-04-21T07:41:15Z",
+            "archived": false,
+            "description": "Show and Tell Webinar Series by CCP-volumeEM"
+          },
+          {
+            "name": "impact-tracker",
+            "url": "https://github.com/ccp-volume-em/impact-tracker",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 0,
+            "pushed_at": "2026-07-23T13:56:06Z",
+            "archived": false,
+            "description": "Tracking views, downloads, and other interactions across CCP-volumeEM output channels"
+          }
+        ]
+      },
+      "zenodo": {
+        "records": []
+      },
+      "youtube": null
+    }
+  ]
+}
