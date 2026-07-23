@@ -82,30 +82,44 @@ def poll_github() -> list[dict]:
 
 
 # ---------- Zenodo ----------
-def poll_zenodo() -> list[dict]:
-    """Fetch all records in the Zenodo community.
-
-    Uses the dedicated community-records endpoint (InvenioRDM), which is
-    the canonical way to enumerate a community's records; falls back to
-    the legacy ?communities= filter if that endpoint 404s.
-    """
-    records: list[dict] = []
-    page = 1
-    base = f"https://zenodo.org/api/communities/{ZENODO_COMMUNITY}/records"
-    while True:
+def _zenodo_probe() -> str:
+    """Return the URL template (with {page}) that yields the most records."""
+    templates = [
+        # dedicated community endpoint, all versions
+        f"https://zenodo.org/api/communities/{ZENODO_COMMUNITY}/records?all_versions=true&size=100&page={{page}}",
+        # legacy filter, all versions
+        f"https://zenodo.org/api/records?communities={ZENODO_COMMUNITY}&all_versions=true&size=100&page={{page}}",
+        # dedicated community endpoint, latest only
+        f"https://zenodo.org/api/communities/{ZENODO_COMMUNITY}/records?size=100&page={{page}}",
+        # legacy filter, latest only
+        f"https://zenodo.org/api/records?communities={ZENODO_COMMUNITY}&size=100&page={{page}}",
+    ]
+    best = (0, templates[0])
+    for tmpl in templates:
+        url = tmpl.format(page=1)
         try:
-            data = _get(f"{base}?size=100&page={page}")
+            data = _get(url)
         except requests.HTTPError as e:
-            if e.response is not None and e.response.status_code == 404 and page == 1:
-                # fall back to legacy filter
-                print(f"  Zenodo: community endpoint 404, falling back to legacy filter")
-                base = f"https://zenodo.org/api/records"
-                data = _get(f"{base}?communities={ZENODO_COMMUNITY}&size=100&page={page}")
-            else:
-                raise
-        total = (data.get("hits", {}) or {}).get("total")
-        if total is not None and page == 1:
-            print(f"  Zenodo: API reports {total} total records in community")
+            code = e.response.status_code if e.response is not None else "?"
+            print(f"  Zenodo probe: {url} -> HTTP {code}")
+            continue
+        total = ((data.get("hits") or {}).get("total")) or 0
+        # InvenioRDM sometimes returns {"value": N, "relation": "eq"} for total
+        if isinstance(total, dict):
+            total = total.get("value", 0)
+        print(f"  Zenodo probe: {url} -> total={total}")
+        if total > best[0]:
+            best = (total, tmpl)
+    print(f"  Zenodo probe: chose template with total={best[0]}")
+    return best[1]
+
+
+def poll_zenodo() -> list[dict]:
+    records: list[dict] = []
+    tmpl = _zenodo_probe()
+    page = 1
+    while True:
+        data = _get(tmpl.format(page=page))
         hits = data.get("hits", {}).get("hits", [])
         if not hits:
             break
