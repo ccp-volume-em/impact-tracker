@@ -331,6 +331,174 @@
         "records": []
       },
       "youtube": null
+    },
+    {
+      "date": "2026-07-23",
+      "github": {
+        "repos": [
+          {
+            "name": "muvis-align",
+            "url": "https://github.com/ccp-volume-em/muvis-align",
+            "stars": 6,
+            "forks": 0,
+            "watchers": 6,
+            "open_issues": 5,
+            "size_kb": 47841,
+            "pushed_at": "2026-07-21T16:56:35Z",
+            "archived": false,
+            "description": "Image registration using multiview-stitcher"
+          },
+          {
+            "name": "guide",
+            "url": "https://github.com/ccp-volume-em/guide",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 2,
+            "size_kb": 731,
+            "pushed_at": "2026-07-03T12:10:04Z",
+            "archived": false,
+            "description": "Community good practice guide"
+          },
+          {
+            "name": "unstitched-tiles-storage",
+            "url": "https://github.com/ccp-volume-em/unstitched-tiles-storage",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "open_issues": 0,
+            "size_kb": 61,
+            "pushed_at": "2026-03-14T10:28:03Z",
+            "archived": false,
+            "description": null
+          },
+          {
+            "name": "omexml_notebooks",
+            "url": "https://github.com/ccp-volume-em/omexml_notebooks",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 10,
+            "pushed_at": "2026-03-13T10:16:09Z",
+            "archived": false,
+            "description": null
+          },
+          {
+            "name": "show-and-tell",
+            "url": "https://github.com/ccp-volume-em/show-and-tell",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "open_issues": 0,
+            "size_kb": 4034,
+            "pushed_at": "2026-04-21T07:41:15Z",
+            "archived": false,
+            "description": "Show and Tell Webinar Series by CCP-volumeEM"
+          },
+          {
+            "name": "impact-tracker",
+            "url": "https://github.com/ccp-volume-em/impact-tracker",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 0,
+            "pushed_at": "2026-07-23T14:27:58Z",
+            "archived": false,
+            "description": "Tracking views, downloads, and other interactions across CCP-volumeEM output channels"
+          }
+        ]
+      },
+      "zenodo": {
+        "records": [
+          {
+            "id": 21509841,
+            "doi": "10.5281/zenodo.21509841",
+            "title": "AI OnDemand (AIoD): An extendable, user-friendly framework for segmenting images at scale (CCP-volumeEM show and tell)",
+            "publication_date": "2026-07-23",
+            "url": "https://zenodo.org/records/21509841",
+            "views": 0,
+            "unique_views": 0,
+            "downloads": 0,
+            "unique_downloads": 0,
+            "version_downloads": 0
+          },
+          {
+            "id": 21063081,
+            "doi": "10.5281/zenodo.21063081",
+            "title": "Collaborative Computational Project for Volume Electron Microscopy (CCP-volumeEM) - Connecting People, Tools, and Data Across the Volume EM Community (Presented at STEP-UP 2026)",
+            "publication_date": "2026-06-30",
+            "url": "https://zenodo.org/records/21063081",
+            "views": 58,
+            "unique_views": 48,
+            "downloads": 32,
+            "unique_downloads": 27,
+            "version_downloads": 32
+          },
+          {
+            "id": 20917913,
+            "doi": "10.5281/zenodo.20917913",
+            "title": "muvis-align: building a registration pipeline for large data & next gen file format",
+            "publication_date": "2025-11-24",
+            "url": "https://zenodo.org/records/20917913",
+            "views": 10,
+            "unique_views": 6,
+            "downloads": 2,
+            "unique_downloads": 2,
+            "version_downloads": 2
+          },
+          {
+            "id": 20510740,
+            "doi": "10.5281/zenodo.20510740",
+            "title": "Summary of breakout discussions at the Inaugural CCP-volumeEM meeting",
+            "publication_date": "2026-06-02",
+            "url": "https://zenodo.org/records/20510740",
+            "views": 2,
+            "unique_views": 2,
+            "downloads": 5,
+            "unique_downloads": 3,
+            "version_downloads": 5
+          },
+          {
+            "id": 20043357,
+            "doi": "10.5281/zenodo.20043357",
+            "title": "Good Practices for image analysis software (CCP-volumeEM show and tell)",
+            "publication_date": "2026-05-05",
+            "url": "https://zenodo.org/records/20043357",
+            "views": 44,
+            "unique_views": 44,
+            "downloads": 70,
+            "unique_downloads": 67,
+            "version_downloads": 70
+          },
+          {
+            "id": 19258127,
+            "doi": "10.5281/zenodo.19258127",
+            "title": "A brief introduction to the use of containers for reproducible image analysis",
+            "publication_date": "2026-02-24",
+            "url": "https://zenodo.org/records/19258127",
+            "views": 63,
+            "unique_views": 59,
+            "downloads": 96,
+            "unique_downloads": 77,
+            "version_downloads": 96
+          },
+          {
+            "id": 19257012,
+            "doi": "10.5281/zenodo.19257012",
+            "title": "From 3D Light to 3D Electron Microscopy - Workshop 4: Image Analysis",
+            "publication_date": "2026-03-27",
+            "url": "https://zenodo.org/records/19257012",
+            "views": 142,
+            "unique_views": 126,
+            "downloads": 323,
+            "unique_downloads": 195,
+            "version_downloads": 323
+          }
+        ]
+      },
+      "youtube": null
     }
   ]
 }
