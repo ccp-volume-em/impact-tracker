@@ -97,13 +97,13 @@ def _zenodo_probe() -> str:
     """Return the URL template (with {page}) that yields the most records."""
     templates = [
         # dedicated community endpoint, all versions
-        f"https://zenodo.org/api/communities/{ZENODO_COMMUNITY}/records?all_versions=true&size=100&page={{page}}",
+        f"https://zenodo.org/api/communities/{ZENODO_COMMUNITY}/records?all_versions=true&size=25&page={{page}}",
         # legacy filter, all versions
-        f"https://zenodo.org/api/records?communities={ZENODO_COMMUNITY}&all_versions=true&size=100&page={{page}}",
+        f"https://zenodo.org/api/records?communities={ZENODO_COMMUNITY}&all_versions=true&size=25&page={{page}}",
         # dedicated community endpoint, latest only
-        f"https://zenodo.org/api/communities/{ZENODO_COMMUNITY}/records?size=100&page={{page}}",
+        f"https://zenodo.org/api/communities/{ZENODO_COMMUNITY}/records?size=25&page={{page}}",
         # legacy filter, latest only
-        f"https://zenodo.org/api/records?communities={ZENODO_COMMUNITY}&size=100&page={{page}}",
+        f"https://zenodo.org/api/records?communities={ZENODO_COMMUNITY}&size=25&page={{page}}",
     ]
     best = (0, templates[0])
     for tmpl in templates:
@@ -151,7 +151,7 @@ def poll_zenodo() -> list[dict]:
                     "version_downloads": stats.get("version_downloads", 0),
                 }
             )
-        if len(hits) < 100:
+        if len(hits) < 25:
             break
         page += 1
     return records
