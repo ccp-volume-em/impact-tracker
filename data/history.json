@@ -830,6 +830,337 @@
           }
         ]
       }
+    },
+    {
+      "date": "2026-07-23",
+      "github": {
+        "repos": [
+          {
+            "name": "muvis-align",
+            "url": "https://github.com/ccp-volume-em/muvis-align",
+            "stars": 6,
+            "forks": 0,
+            "watchers": 6,
+            "open_issues": 5,
+            "size_kb": 47841,
+            "pushed_at": "2026-07-21T16:56:35Z",
+            "archived": false,
+            "description": "Image registration using multiview-stitcher"
+          },
+          {
+            "name": "guide",
+            "url": "https://github.com/ccp-volume-em/guide",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 2,
+            "size_kb": 731,
+            "pushed_at": "2026-07-03T12:10:04Z",
+            "archived": false,
+            "description": "Community good practice guide"
+          },
+          {
+            "name": "unstitched-tiles-storage",
+            "url": "https://github.com/ccp-volume-em/unstitched-tiles-storage",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "open_issues": 0,
+            "size_kb": 61,
+            "pushed_at": "2026-03-14T10:28:03Z",
+            "archived": false,
+            "description": null
+          },
+          {
+            "name": "omexml_notebooks",
+            "url": "https://github.com/ccp-volume-em/omexml_notebooks",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 10,
+            "pushed_at": "2026-03-13T10:16:09Z",
+            "archived": false,
+            "description": null
+          },
+          {
+            "name": "show-and-tell",
+            "url": "https://github.com/ccp-volume-em/show-and-tell",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "open_issues": 0,
+            "size_kb": 4034,
+            "pushed_at": "2026-04-21T07:41:15Z",
+            "archived": false,
+            "description": "Show and Tell Webinar Series by CCP-volumeEM"
+          },
+          {
+            "name": "impact-tracker",
+            "url": "https://github.com/ccp-volume-em/impact-tracker",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 30,
+            "pushed_at": "2026-07-23T15:05:46Z",
+            "archived": false,
+            "description": "Tracking views, downloads, and other interactions across CCP-volumeEM output channels"
+          }
+        ]
+      },
+      "zenodo": {
+        "records": [
+          {
+            "id": 21509841,
+            "doi": "10.5281/zenodo.21509841",
+            "title": "AI OnDemand (AIoD): An extendable, user-friendly framework for segmenting images at scale (CCP-volumeEM show and tell)",
+            "publication_date": "2026-07-23",
+            "url": "https://zenodo.org/records/21509841",
+            "views": 0,
+            "unique_views": 0,
+            "downloads": 0,
+            "unique_downloads": 0,
+            "version_downloads": 0
+          },
+          {
+            "id": 21063081,
+            "doi": "10.5281/zenodo.21063081",
+            "title": "Collaborative Computational Project for Volume Electron Microscopy (CCP-volumeEM) - Connecting People, Tools, and Data Across the Volume EM Community (Presented at STEP-UP 2026)",
+            "publication_date": "2026-06-30",
+            "url": "https://zenodo.org/records/21063081",
+            "views": 58,
+            "unique_views": 48,
+            "downloads": 32,
+            "unique_downloads": 27,
+            "version_downloads": 32
+          },
+          {
+            "id": 20917913,
+            "doi": "10.5281/zenodo.20917913",
+            "title": "muvis-align: building a registration pipeline for large data & next gen file format",
+            "publication_date": "2025-11-24",
+            "url": "https://zenodo.org/records/20917913",
+            "views": 10,
+            "unique_views": 6,
+            "downloads": 2,
+            "unique_downloads": 2,
+            "version_downloads": 2
+          },
+          {
+            "id": 20510740,
+            "doi": "10.5281/zenodo.20510740",
+            "title": "Summary of breakout discussions at the Inaugural CCP-volumeEM meeting",
+            "publication_date": "2026-06-02",
+            "url": "https://zenodo.org/records/20510740",
+            "views": 2,
+            "unique_views": 2,
+            "downloads": 5,
+            "unique_downloads": 3,
+            "version_downloads": 5
+          },
+          {
+            "id": 20043357,
+            "doi": "10.5281/zenodo.20043357",
+            "title": "Good Practices for image analysis software (CCP-volumeEM show and tell)",
+            "publication_date": "2026-05-05",
+            "url": "https://zenodo.org/records/20043357",
+            "views": 44,
+            "unique_views": 44,
+            "downloads": 70,
+            "unique_downloads": 67,
+            "version_downloads": 70
+          },
+          {
+            "id": 19258127,
+            "doi": "10.5281/zenodo.19258127",
+            "title": "A brief introduction to the use of containers for reproducible image analysis",
+            "publication_date": "2026-02-24",
+            "url": "https://zenodo.org/records/19258127",
+            "views": 63,
+            "unique_views": 59,
+            "downloads": 96,
+            "unique_downloads": 77,
+            "version_downloads": 96
+          },
+          {
+            "id": 19257012,
+            "doi": "10.5281/zenodo.19257012",
+            "title": "From 3D Light to 3D Electron Microscopy - Workshop 4: Image Analysis",
+            "publication_date": "2026-03-27",
+            "url": "https://zenodo.org/records/19257012",
+            "views": 142,
+            "unique_views": 126,
+            "downloads": 323,
+            "unique_downloads": 195,
+            "version_downloads": 323
+          }
+        ]
+      },
+      "youtube": {
+        "channel": {
+          "id": "UC9XAsWS_i-Cb7BjOIwge72w",
+          "title": "CCP-volumeEM",
+          "subscribers": 49,
+          "total_views": 706,
+          "video_count": 17
+        },
+        "videos": [
+          {
+            "id": "2yWhYc0Ibhw",
+            "url": "https://www.youtube.com/watch?v=2yWhYc0Ibhw",
+            "title": "AI OnDemand:An extendable, user-friendly framework for segmenting images at scale with Cameron Shand",
+            "published_at": "2026-07-23T10:17:28Z",
+            "views": 6,
+            "likes": 2,
+            "comments": 0
+          },
+          {
+            "id": "KWL4aMttIpw",
+            "url": "https://www.youtube.com/watch?v=KWL4aMttIpw",
+            "title": "Napari software for 3D segmentation with the napari-zelda plugin with Rocco D\u2019Antuono",
+            "published_at": "2026-07-21T10:37:51Z",
+            "views": 13,
+            "likes": 2,
+            "comments": 0
+          },
+          {
+            "id": "HsqH6RAcJps",
+            "url": "https://www.youtube.com/watch?v=HsqH6RAcJps",
+            "title": "OME-Zarr: A next generation file format for FAIR bioimaging data with Chris Barnes",
+            "published_at": "2026-06-02T10:16:57Z",
+            "views": 64,
+            "likes": 1,
+            "comments": 0
+          },
+          {
+            "id": "wzh4vfYqUqM",
+            "url": "https://www.youtube.com/watch?v=wzh4vfYqUqM",
+            "title": "Jupyter Notebooks for Shareable Research Outputs with Dr Piper Fowler-Wright",
+            "published_at": "2026-05-05T10:43:26Z",
+            "views": 51,
+            "likes": 2,
+            "comments": 0
+          },
+          {
+            "id": "HHJJZ79KC4Y",
+            "url": "https://www.youtube.com/watch?v=HHJJZ79KC4Y",
+            "title": "Good practices for image analysis software with Dr Kimberly Meechan",
+            "published_at": "2026-03-25T10:17:39Z",
+            "views": 99,
+            "likes": 5,
+            "comments": 0
+          },
+          {
+            "id": "E-piecECQVI",
+            "url": "https://www.youtube.com/watch?v=E-piecECQVI",
+            "title": "A brief introduction to the use of containers for reproducible image analysis with Dr Martin Jones",
+            "published_at": "2026-03-02T10:55:46Z",
+            "views": 94,
+            "likes": 1,
+            "comments": 0
+          },
+          {
+            "id": "eEAu75JatOw",
+            "url": "https://www.youtube.com/watch?v=eEAu75JatOw",
+            "title": "46 years of CCP4 with Ivo Tews",
+            "published_at": "2026-01-29T14:03:05Z",
+            "views": 35,
+            "likes": 0,
+            "comments": 0
+          },
+          {
+            "id": "rrAeExq9N7U",
+            "url": "https://www.youtube.com/watch?v=rrAeExq9N7U",
+            "title": "Workflow for the 'missing middle' in volume EM with Davi Bock",
+            "published_at": "2026-01-12T11:11:25Z",
+            "views": 86,
+            "likes": 3,
+            "comments": 0
+          },
+          {
+            "id": "LIykCqmFviM",
+            "url": "https://www.youtube.com/watch?v=LIykCqmFviM",
+            "title": "CCP for NMR Crystallography with Jonathan Yates",
+            "published_at": "2026-01-12T11:04:58Z",
+            "views": 29,
+            "likes": 3,
+            "comments": 0
+          },
+          {
+            "id": "GgLqM3BewR8",
+            "url": "https://www.youtube.com/watch?v=GgLqM3BewR8",
+            "title": "Our experience with CCP-EM with Sjors Scheres",
+            "published_at": "2026-01-09T12:55:32Z",
+            "views": 23,
+            "likes": 0,
+            "comments": 0
+          },
+          {
+            "id": "x2MFa_fiE2Q",
+            "url": "https://www.youtube.com/watch?v=x2MFa_fiE2Q",
+            "title": "What might the future of CCP-volumeEM look like with Martin Jones and Matthew Hartley",
+            "published_at": "2026-01-09T12:30:57Z",
+            "views": 14,
+            "likes": 0,
+            "comments": 0
+          },
+          {
+            "id": "ZrAnLNHHFUk",
+            "url": "https://www.youtube.com/watch?v=ZrAnLNHHFUk",
+            "title": "Current computational challenges in volumeEM with Michele Darrow",
+            "published_at": "2026-01-09T12:27:20Z",
+            "views": 35,
+            "likes": 1,
+            "comments": 0
+          },
+          {
+            "id": "DbV4hXNzrec",
+            "url": "https://www.youtube.com/watch?v=DbV4hXNzrec",
+            "title": "Maintaining open-source software for volume EM with Kimberly Meechan",
+            "published_at": "2025-12-15T14:42:26Z",
+            "views": 15,
+            "likes": 1,
+            "comments": 0
+          },
+          {
+            "id": "nqUqxyFwv5k",
+            "url": "https://www.youtube.com/watch?v=nqUqxyFwv5k",
+            "title": "Volume EM in the Peripheral Nervous System with Giulia Casal",
+            "published_at": "2025-12-15T14:25:35Z",
+            "views": 16,
+            "likes": 0,
+            "comments": 0
+          },
+          {
+            "id": "7uz4ouyZ8E0",
+            "url": "https://www.youtube.com/watch?v=7uz4ouyZ8E0",
+            "title": "Data management and analysis for large vEM images with Norman Rzepka",
+            "published_at": "2025-12-15T14:06:09Z",
+            "views": 12,
+            "likes": 2,
+            "comments": 0
+          },
+          {
+            "id": "MhjnwdK6c8U",
+            "url": "https://www.youtube.com/watch?v=MhjnwdK6c8U",
+            "title": "Setting the scene for CCP-volumeEM with Lucy Collinson",
+            "published_at": "2025-12-15T13:57:30Z",
+            "views": 72,
+            "likes": 2,
+            "comments": 0
+          },
+          {
+            "id": "wakjVB5Lk3w",
+            "url": "https://www.youtube.com/watch?v=wakjVB5Lk3w",
+            "title": "'empanada: a napari plugin for facile segmentation in EM Images' with Kedar Narayan",
+            "published_at": "2025-12-15T13:43:53Z",
+            "views": 53,
+            "likes": 3,
+            "comments": 0
+          }
+        ]
+      }
     }
   ]
 }
