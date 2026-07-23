@@ -22,7 +22,9 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
+import time
 from datetime import date
 from pathlib import Path
 from typing import Any
@@ -59,9 +61,37 @@ def _get(url: str, headers: dict[str, str] | None = None) -> Any:
 
 
 # ---------- GitHub ----------
-def poll_github() -> list[dict]:
+def _gh_headers() -> dict:
     token = os.environ.get("GITHUB_TOKEN")
-    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    return {"Authorization": f"Bearer {token}"} if token else {}
+
+
+def _gh_contributor_stats(owner: str, repo: str) -> tuple[int, int, int]:
+    """Return (commits, lines_added, lines_deleted) for a repo.
+
+    The contributors-stats endpoint returns 202 while GitHub computes the
+    aggregate; retry a few times, then give up quietly (returning zeros).
+    """
+    url = f"https://api.github.com/repos/{owner}/{repo}/stats/contributors"
+    for attempt in range(5):
+        r = requests.get(url, headers={**UA, **_gh_headers()}, timeout=TIMEOUT)
+        if r.status_code == 202:
+            time.sleep(2 * (attempt + 1))
+            continue
+        if r.status_code == 204:  # empty repo
+            return (0, 0, 0)
+        r.raise_for_status()
+        data = r.json()
+        commits = sum(c.get("total", 0) for c in data)
+        added = sum(w.get("a", 0) for c in data for w in c.get("weeks", []))
+        deleted = sum(w.get("d", 0) for c in data for w in c.get("weeks", []))
+        return commits, added, deleted
+    print(f"    {repo}: contributor stats not ready after retries", flush=True)
+    return (0, 0, 0)
+
+
+def poll_github() -> list[dict]:
+    headers = _gh_headers()
     repos: list[dict] = []
     page = 1
     while True:
@@ -72,6 +102,7 @@ def poll_github() -> list[dict]:
         if not batch:
             break
         for r in batch:
+            commits, added, deleted = _gh_contributor_stats(GH_ORG, r["name"])
             repos.append(
                 {
                     "name": r["name"],
@@ -84,6 +115,9 @@ def poll_github() -> list[dict]:
                     "pushed_at": r.get("pushed_at"),
                     "archived": r.get("archived", False),
                     "description": r.get("description"),
+                    "commits": commits,
+                    "lines_added": added,
+                    "lines_deleted": deleted,
                 }
             )
         if len(batch) < 100:
@@ -137,6 +171,8 @@ def poll_zenodo() -> list[dict]:
         for r in hits:
             stats = r.get("stats", {}) or {}
             md = r.get("metadata", {}) or {}
+            files = r.get("files", []) or []
+            total_bytes = sum(f.get("size", 0) for f in files)
             records.append(
                 {
                     "id": r.get("id"),
@@ -149,6 +185,8 @@ def poll_zenodo() -> list[dict]:
                     "downloads": stats.get("downloads", 0),
                     "unique_downloads": stats.get("unique_downloads", 0),
                     "version_downloads": stats.get("version_downloads", 0),
+                    "num_files": len(files),
+                    "total_bytes": total_bytes,
                 }
             )
         if len(hits) < 25:
@@ -196,12 +234,13 @@ def poll_youtube(api_key: str) -> tuple[dict, list[dict]]:
         batch = video_ids[i : i + 50]
         vids = requests.get(
             "https://www.googleapis.com/youtube/v3/videos",
-            params={"part": "statistics,snippet", "id": ",".join(batch), "key": api_key},
+            params={"part": "statistics,snippet,contentDetails", "id": ",".join(batch), "key": api_key},
             headers=UA, timeout=TIMEOUT,
         ).json()
         for v in vids.get("items", []):
             s = v.get("statistics", {}) or {}
             sn = v.get("snippet", {}) or {}
+            cd = v.get("contentDetails", {}) or {}
             videos.append(
                 {
                     "id": v["id"],
@@ -211,9 +250,33 @@ def poll_youtube(api_key: str) -> tuple[dict, list[dict]]:
                     "views": int(s.get("viewCount", 0)),
                     "likes": int(s.get("likeCount", 0)),
                     "comments": int(s.get("commentCount", 0)),
+                    "duration_seconds": _iso8601_duration_to_seconds(cd.get("duration", "PT0S")),
                 }
             )
     return channel, videos
+
+
+_ISO8601_DUR = re.compile(
+    r"^P"
+    r"(?:(?P<days>\d+)D)?"
+    r"(?:T(?:(?P<hours>\d+)H)?(?:(?P<minutes>\d+)M)?(?:(?P<seconds>\d+)S)?)?"
+    r"$"
+)
+
+
+def _iso8601_duration_to_seconds(s: str) -> int:
+    """Parse a YouTube ISO-8601 duration (e.g. 'PT1H12M34S') to seconds."""
+    if not s:
+        return 0
+    m = _ISO8601_DUR.match(s)
+    if not m:
+        return 0
+    return (
+        int(m.group("days") or 0) * 86400
+        + int(m.group("hours") or 0) * 3600
+        + int(m.group("minutes") or 0) * 60
+        + int(m.group("seconds") or 0)
+    )
 
 
 # ---------- Storage ----------
