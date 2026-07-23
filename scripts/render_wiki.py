@@ -140,7 +140,7 @@ def zn_table(records: list[dict]) -> str:
         title = (r.get("title") or f"Record {r.get('id')}").replace("|", "\\|")
         url = r.get("url") or f"https://zenodo.org/records/{r.get('id')}"
         lines.append(
-            f"| [{title[:80]}]({url}) | {fmt(r.get('views', 0))} | {fmt(r.get('unique_views', 0))} | "
+            f"| [{title}]({url}) | {fmt(r.get('views', 0))} | {fmt(r.get('unique_views', 0))} | "
             f"{fmt(r.get('downloads', 0))} | {fmt(r.get('unique_downloads', 0))} | "
             f"{r.get('publication_date') or ''} |"
         )
@@ -159,7 +159,7 @@ def yt_table(videos: list[dict]) -> str:
         title = (v.get("title") or v["id"]).replace("|", "\\|")
         pub = (v.get("published_at") or "")[:10]
         lines.append(
-            f"| [{title[:80]}]({v['url']}) | {fmt(v.get('views', 0))} | "
+            f"| [{title}]({v['url']}) | {fmt(v.get('views', 0))} | "
             f"{fmt(v.get('likes', 0))} | {fmt(v.get('comments', 0))} | {pub} |"
         )
     return "\n".join(lines)
