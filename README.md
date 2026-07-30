@@ -14,9 +14,13 @@ A GitHub Actions workflow polls three sources every Monday, appends a snapshot t
 
 ## What gets tracked
 
-- **GitHub**: per-repo stars, forks, watchers, open issues, size, last push
-- **Zenodo**: per-record views, unique views, downloads, unique downloads
-- **YouTube**: channel subscribers + total views, per-video views/likes/comments
+- **GitHub org**: per-repo stars, forks, watchers, open issues, size, last push, plus aggregate commits and lines added/deleted
+- **Zenodo community**: per-record views, unique views, downloads, unique downloads, plus estimated bytes served
+- **YouTube channel**: channel subs + total views, per-video views/likes/comments, plus view-weighted watch hours
+- **Quay.io images**: per-image pulls, tags, size, last modified
+- **Team commits**: per team member, total public commits + commits outside the CCP-volumeEM org
+
+All sources are configured in `config.json` — edit that to add/remove repos, images, or usernames without touching Python.
 
 ## Output
 

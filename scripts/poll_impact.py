@@ -33,10 +33,14 @@ import requests
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 HISTORY = REPO_ROOT / "data" / "history.json"
+CONFIG = json.loads((REPO_ROOT / "config.json").read_text())
 
-GH_ORG = "ccp-volume-em"
-ZENODO_COMMUNITY = "ccp-volume-em"
-YT_HANDLE = "CCP-volumeEM"
+GH_ORG: str = CONFIG["github_org"]
+ZENODO_COMMUNITY: str = CONFIG["zenodo_community"]
+YT_HANDLE: str = CONFIG["youtube_handle"]
+TEAM_MEMBERS: list[str] = CONFIG.get("team_members", [])
+QUAY_IMAGES: list[str] = CONFIG.get("quay_images", [])
+EXTERNAL_SCOPE: dict = CONFIG.get("external_scope", {"orgs": [], "repos": []})
 
 TODAY = date.today().isoformat()
 UA = {
@@ -264,6 +268,118 @@ _ISO8601_DUR = re.compile(
 )
 
 
+# ---------- Quay.io ----------
+def poll_quay(images: list[str]) -> list[dict]:
+    """Fetch per-image metadata from quay.io for each 'namespace/name' entry.
+
+    The public endpoint returns metadata including tags. Pull counts are exposed
+    via the `stats` field when the repo owner has enabled them; when they aren't,
+    we still capture size, tag count, and last-modified.
+    """
+    rows: list[dict] = []
+    for image in images:
+        if "/" not in image:
+            print(f"    Quay: skipping malformed entry {image!r}", flush=True)
+            continue
+        ns, name = image.split("/", 1)
+        try:
+            data = _get(
+                f"https://quay.io/api/v1/repository/{ns}/{name}?includeStats=true&includeTags=true"
+            )
+        except requests.HTTPError as e:
+            code = e.response.status_code if e.response is not None else "?"
+            print(f"    Quay: {image} -> HTTP {code}")
+            continue
+        tags = data.get("tags") or {}
+        # pulls appears in a couple of places depending on plan/ownership
+        pulls = (
+            (data.get("stats") or {}).get("pulls")
+            or data.get("popularity")
+            or 0
+        )
+        # sum size across tags (each tag has size for the image at that tag)
+        total_size = sum((t.get("size") or 0) for t in tags.values())
+        last_modified = data.get("last_modified") or max(
+            (t.get("last_modified") or "" for t in tags.values()), default=""
+        )
+        rows.append(
+            {
+                "image": image,
+                "url": f"https://quay.io/repository/{ns}/{name}",
+                "is_public": data.get("is_public"),
+                "description": data.get("description"),
+                "pulls": int(pulls) if isinstance(pulls, (int, float)) else 0,
+                "num_tags": len(tags),
+                "total_size_bytes": total_size,
+                "last_modified": last_modified,
+            }
+        )
+    return rows
+
+
+# ---------- Team commits (across configured external scope) ----------
+def poll_team_commits(usernames: list[str], scope: dict) -> list[dict]:
+    """Public commits per team member within the configured scope.
+
+    The scope is {"orgs": [...], "repos": [...]}. GitHub's /search/commits
+    doesn't OR `repo:` qualifiers within a single query, so we issue one
+    query per (user, scope-entry) and sum. Search API allows 30 req/min
+    authenticated; we throttle to stay well under.
+    """
+    if not usernames:
+        return []
+    scopes: list[tuple[str, str]] = []
+    for org in scope.get("orgs", []) or []:
+        scopes.append(("org", org))
+    for repo in scope.get("repos", []) or []:
+        scopes.append(("repo", repo))
+    if not scopes:
+        print("    Team commits: no scope configured, skipping")
+        return []
+
+    headers = {
+        **_gh_headers(),
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    rows: list[dict] = []
+    for u in usernames:
+        per_scope: dict[str, int] = {}
+        total = 0
+        for qualifier, value in scopes:
+            q = f"author:{u} {qualifier}:{value}"
+            try:
+                r = requests.get(
+                    "https://api.github.com/search/commits",
+                    params={"q": q, "per_page": 1},
+                    headers={**UA, **headers},
+                    timeout=TIMEOUT,
+                )
+            except requests.RequestException as e:
+                print(f"    Team commits: {u} in {qualifier}:{value} -> {e}")
+                continue
+            if not r.ok:
+                print(
+                    f"    Team commits: {u} in {qualifier}:{value} -> HTTP {r.status_code} "
+                    f"{r.text[:200]}"
+                )
+                continue
+            n = r.json().get("total_count", 0)
+            per_scope[f"{qualifier}:{value}"] = n
+            total += n
+            # Search API is 30 rpm; ~2.2s keeps us at ~27 rpm across all users.
+            time.sleep(2.2)
+        rows.append(
+            {
+                "username": u,
+                "url": f"https://github.com/{u}",
+                "total_commits": total,
+                "per_scope": per_scope,
+            }
+        )
+    return rows
+
+
 def _iso8601_duration_to_seconds(s: str) -> int:
     """Parse a YouTube ISO-8601 duration (e.g. 'PT1H12M34S') to seconds."""
     if not s:
@@ -321,6 +437,22 @@ def main() -> int:
     else:
         print("  YouTube: skipped (YOUTUBE_API_KEY not set)")
 
+    try:
+        quay = poll_quay(QUAY_IMAGES) if QUAY_IMAGES else []
+        if QUAY_IMAGES:
+            print(f"  Quay: {len(quay)} images, {sum(q.get('pulls', 0) for q in quay)} total pulls")
+    except Exception as e:
+        errors.append(f"Quay: {e}")
+        quay = []
+
+    try:
+        team = poll_team_commits(TEAM_MEMBERS, EXTERNAL_SCOPE) if TEAM_MEMBERS else []
+        if TEAM_MEMBERS:
+            print(f"  Team commits: {len(team)} members, {sum(t.get('total_commits', 0) for t in team)} commits in scope")
+    except Exception as e:
+        errors.append(f"Team commits: {e}")
+        team = []
+
     history = load_history()
     history["polls"].append(
         {
@@ -328,6 +460,8 @@ def main() -> int:
             "github": {"repos": gh},
             "zenodo": {"records": zn},
             "youtube": {"channel": yt_channel, "videos": yt_videos} if yt_channel else None,
+            "quay": {"images": quay},
+            "team_commits": {"members": team},
         }
     )
     save_history(history)

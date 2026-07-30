@@ -1,0 +1,30 @@
+{
+  "github_org": "ccp-volume-em",
+  "zenodo_community": "ccp-volume-em",
+  "youtube_handle": "CCP-volumeEM",
+  "team_members": [
+    "folterj",
+    "M-A-Demir",
+    "martlj",
+    "piperfw",
+    "GMW99"
+  ],
+  "external_scope": {
+    "orgs": ["volume-em"],
+    "repos": [
+      "rosalindfranklininstitute/mib-container",
+      "rosalindfranklininstitute/imod-container",
+      "rosalindfranklininstitute/volume-segmantics-container",
+      "rosalindfranklininstitute/volume-em-container-documentation",
+      "rosalindfranklininstitute/fiji-mobie",
+      "rosalindfranklininstitute/napari-clemreg-empanada"
+    ]
+  },
+  "quay_images": [
+    "rosalindfranklininstitute/mib-container",
+    "rosalindfranklininstitute/imod-container",
+    "rosalindfranklininstitute/fiji-mobie",
+    "rosalindfranklininstitute/volume-segmantics",
+    "rosalindfranklininstitute/napari-clemreg-empanada"
+  ]
+}
