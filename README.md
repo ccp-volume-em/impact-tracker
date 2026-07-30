@@ -1,6 +1,6 @@
 # impact-tracker
 
-Weekly automated impact tracking for [CCP-volumeEM](https://github.com/ccp-volume-em).
+Weekly automated impact tracking for [CCP-volumeEM](https://github.com/ccp-volume-em). The tracker data is updated every Monday morning, and the results are [here](https://github.com/ccp-volume-em/impact-tracker/wiki/Impact).
 
 A GitHub Actions workflow polls three sources every Monday, appends a snapshot to `data/history.json`, and publishes a report to this repo's wiki.
 
