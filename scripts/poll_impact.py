@@ -284,7 +284,8 @@ def poll_quay(images: list[str]) -> list[dict]:
         ns, name = image.split("/", 1)
         try:
             data = _get(
-                f"https://quay.io/api/v1/repository/{ns}/{name}?includeStats=true&includeTags=true"
+                f"https://quay.io/api/v1/repository/{ns}/{name}?includeStats=true&includeTags=true",
+                headers={"X-Requested-With": "XMLHttpRequest"},
             )
         except requests.HTTPError as e:
             code = e.response.status_code if e.response is not None else "?"
