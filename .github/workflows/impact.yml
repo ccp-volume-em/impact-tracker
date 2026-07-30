@@ -1,9 +1,9 @@
-name: Weekly impact poll
+name: Daily impact poll
 
 on:
   schedule:
-    # Every Monday at 08:00 UTC
-    - cron: "0 8 * * 1"
+    # Every day at 06:00 UTC
+    - cron: "0 6 * * *"
   workflow_dispatch: {}  # allow manual runs
 
 permissions:
@@ -42,7 +42,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No data changes to commit"
           else
-            git commit -m "Weekly impact poll: $(date -u +%Y-%m-%d)"
+            git commit -m "Daily impact poll: $(date -u +%Y-%m-%d)"
             git push
           fi
 
