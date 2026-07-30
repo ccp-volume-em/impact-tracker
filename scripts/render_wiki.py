@@ -113,17 +113,30 @@ def mermaid_line(title: str, dates: list[str], series: dict[str, list[int]]) -> 
 def gh_table(repos: list[dict]) -> str:
     if not repos:
         return "_No repos._"
-    repos = sorted(repos, key=lambda r: r.get("stars", 0), reverse=True)
+    # Sort by org group first (ccp-volume-em, then volume-em, then other),
+    # then by stars descending within each group.
+    org_order = {"ccp-volume-em": 0, "volume-em": 1, "other": 2}
+    repos = sorted(
+        repos,
+        key=lambda r: (org_order.get(r.get("org", "other"), 3), -(r.get("stars", 0) or 0)),
+    )
     lines = [
-        "| Repo | Stars | Forks | Watchers | Open issues | Last push |",
-        "|---|---:|---:|---:|---:|---|",
+        "| Repo | Org | Stars | Forks | Watchers | Open issues | Last push |",
+        "|---|---|---:|---:|---:|---:|---|",
     ]
     for r in repos:
-        name = f"[{r['name']}]({r['url']})"
+        # For repos outside the home org, show the full owner/name so it's
+        # obvious where a repo lives (esp. useful when Org is 'other').
+        if r.get("org") == "ccp-volume-em":
+            display = r["name"]
+        else:
+            display = r.get("full_name") or f"{r.get('org','')}/{r['name']}"
+        name = f"[{display}]({r['url']})"
         pushed = (r.get("pushed_at") or "")[:10]
         lines.append(
-            f"| {name} | {fmt(r.get('stars', 0))} | {fmt(r.get('forks', 0))} | "
-            f"{fmt(r.get('watchers', 0))} | {fmt(r.get('open_issues', 0))} | {pushed} |"
+            f"| {name} | `{r.get('org', '?')}` | {fmt(r.get('stars', 0))} | "
+            f"{fmt(r.get('forks', 0))} | {fmt(r.get('watchers', 0))} | "
+            f"{fmt(r.get('open_issues', 0))} | {pushed} |"
         )
     return "\n".join(lines)
 
@@ -203,9 +216,12 @@ def build() -> None:
     yt_videos = yt.get("videos", []) or []
 
     # ---- summary lines ----
-    gh_commits = sum(r.get("commits", 0) for r in gh_repos)
-    gh_added = sum(r.get("lines_added", 0) for r in gh_repos)
-    gh_deleted = sum(r.get("lines_deleted", 0) for r in gh_repos)
+    # Contributor stats are only fetched for the home org; external repos
+    # get basic metadata only, so scope the aggregate here explicitly.
+    ccp_repos = [r for r in gh_repos if r.get("org") == "ccp-volume-em"]
+    gh_commits = sum(r.get("commits", 0) for r in ccp_repos)
+    gh_added = sum(r.get("lines_added", 0) for r in ccp_repos)
+    gh_deleted = sum(r.get("lines_deleted", 0) for r in ccp_repos)
 
     # Zenodo download volume: each record's `downloads` field is a count of
     # file-level downloads. We approximate served bytes as
@@ -226,7 +242,7 @@ def build() -> None:
 
     parts.append("\n## GitHub repos\n")
     parts.append(
-        f"_Aggregate activity across all repos: **{fmt(gh_commits)}** commits · "
+        f"_Aggregate activity across the ccp-volume-em org: **{fmt(gh_commits)}** commits · "
         f"**+{fmt(gh_added)}** / **−{fmt(gh_deleted)}** lines._\n"
     )
     parts.append(gh_table(gh_repos))

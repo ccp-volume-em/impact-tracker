@@ -94,7 +94,32 @@ def _gh_contributor_stats(owner: str, repo: str) -> tuple[int, int, int]:
     return (0, 0, 0)
 
 
+def _format_repo(r: dict, org_label: str, *, with_stats: bool = False) -> dict:
+    d = {
+        "name": r["name"],
+        "full_name": r.get("full_name", f"{org_label}/{r['name']}"),
+        "url": r["html_url"],
+        "org": org_label,
+        "stars": r.get("stargazers_count", 0),
+        "forks": r.get("forks_count", 0),
+        "watchers": r.get("subscribers_count", r.get("watchers_count", 0)),
+        "open_issues": r.get("open_issues_count", 0),
+        "size_kb": r.get("size", 0),
+        "pushed_at": r.get("pushed_at"),
+        "archived": r.get("archived", False),
+        "description": r.get("description"),
+    }
+    if with_stats:
+        owner = (r.get("owner") or {}).get("login") or org_label
+        commits, added, deleted = _gh_contributor_stats(owner, r["name"])
+        d["commits"] = commits
+        d["lines_added"] = added
+        d["lines_deleted"] = deleted
+    return d
+
+
 def poll_github() -> list[dict]:
+    """Fetch ccp-volume-em repos with contributor stats."""
     headers = _gh_headers()
     repos: list[dict] = []
     page = 1
@@ -106,27 +131,55 @@ def poll_github() -> list[dict]:
         if not batch:
             break
         for r in batch:
-            commits, added, deleted = _gh_contributor_stats(GH_ORG, r["name"])
-            repos.append(
-                {
-                    "name": r["name"],
-                    "url": r["html_url"],
-                    "stars": r.get("stargazers_count", 0),
-                    "forks": r.get("forks_count", 0),
-                    "watchers": r.get("subscribers_count", r.get("watchers_count", 0)),
-                    "open_issues": r.get("open_issues_count", 0),
-                    "size_kb": r.get("size", 0),
-                    "pushed_at": r.get("pushed_at"),
-                    "archived": r.get("archived", False),
-                    "description": r.get("description"),
-                    "commits": commits,
-                    "lines_added": added,
-                    "lines_deleted": deleted,
-                }
-            )
+            repos.append(_format_repo(r, GH_ORG, with_stats=True))
         if len(batch) < 100:
             break
         page += 1
+    return repos
+
+
+def poll_external_repos(scope: dict) -> list[dict]:
+    """Fetch stats for repos configured under external_scope.
+
+    Org-listed repos get labelled with the org name. Individually listed repos
+    get the label 'other'. Contributor stats are skipped here to keep the run
+    time reasonable.
+    """
+    headers = _gh_headers()
+    repos: list[dict] = []
+    for org in scope.get("orgs", []) or []:
+        page = 1
+        while True:
+            try:
+                batch = _get(
+                    f"https://api.github.com/orgs/{org}/repos?per_page=100&page={page}",
+                    headers=headers,
+                )
+            except requests.HTTPError as e:
+                code = e.response.status_code if e.response is not None else "?"
+                print(f"    External org {org} -> HTTP {code}")
+                break
+            if not batch:
+                break
+            for r in batch:
+                repos.append(_format_repo(r, org))
+            if len(batch) < 100:
+                break
+            page += 1
+    for full_name in scope.get("repos", []) or []:
+        if "/" not in full_name:
+            continue
+        owner, name = full_name.split("/", 1)
+        try:
+            r = _get(
+                f"https://api.github.com/repos/{owner}/{name}",
+                headers=headers,
+            )
+        except requests.HTTPError as e:
+            code = e.response.status_code if e.response is not None else "?"
+            print(f"    External repo {full_name} -> HTTP {code}")
+            continue
+        repos.append(_format_repo(r, "other"))
     return repos
 
 
@@ -291,17 +344,38 @@ def poll_quay(images: list[str]) -> list[dict]:
             code = e.response.status_code if e.response is not None else "?"
             print(f"    Quay: {image} -> HTTP {code}")
             continue
-        tags = data.get("tags") or {}
-        # pulls appears in a couple of places depending on plan/ownership
-        pulls = (
-            (data.get("stats") or {}).get("pulls")
-            or data.get("popularity")
-            or 0
-        )
-        # sum size across tags (each tag has size for the image at that tag)
-        total_size = sum((t.get("size") or 0) for t in tags.values())
+
+        # Normalise tags: sometimes dict-of-name→info, sometimes list-of-info
+        raw_tags = data.get("tags") or {}
+        if isinstance(raw_tags, dict):
+            tags = list(raw_tags.values())
+        elif isinstance(raw_tags, list):
+            tags = raw_tags
+        else:
+            tags = []
+
+        # Pull count lives in one of several fields depending on plan/ownership
+        pulls = 0
+        stats = data.get("stats")
+        if isinstance(stats, dict) and isinstance(stats.get("pulls"), (int, float)):
+            pulls = int(stats["pulls"])
+        elif isinstance(stats, list):
+            # e.g. list of daily-count objects
+            for entry in stats:
+                if isinstance(entry, dict):
+                    v = entry.get("count") or entry.get("pulls") or 0
+                    if isinstance(v, (int, float)):
+                        pulls += int(v)
+        pop = data.get("popularity")
+        if pulls == 0 and isinstance(pop, (int, float)):
+            pulls = int(pop)
+        elif pulls == 0 and isinstance(pop, list):
+            pulls = int(sum(x for x in pop if isinstance(x, (int, float))))
+
+        total_size = sum((t.get("size") or 0) for t in tags if isinstance(t, dict))
         last_modified = data.get("last_modified") or max(
-            (t.get("last_modified") or "" for t in tags.values()), default=""
+            (t.get("last_modified") or "" for t in tags if isinstance(t, dict)),
+            default="",
         )
         rows.append(
             {
@@ -309,12 +383,13 @@ def poll_quay(images: list[str]) -> list[dict]:
                 "url": f"https://quay.io/repository/{ns}/{name}",
                 "is_public": data.get("is_public"),
                 "description": data.get("description"),
-                "pulls": int(pulls) if isinstance(pulls, (int, float)) else 0,
+                "pulls": pulls,
                 "num_tags": len(tags),
                 "total_size_bytes": total_size,
                 "last_modified": last_modified,
             }
         )
+        print(f"    Quay: {image} -> pulls={pulls}, tags={len(tags)}", flush=True)
     return rows
 
 
@@ -414,10 +489,19 @@ def main() -> int:
 
     try:
         gh = poll_github()
-        print(f"  GitHub: {len(gh)} repos, {sum(r['stars'] for r in gh)} total stars")
+        print(f"  GitHub ({GH_ORG}): {len(gh)} repos, {sum(r['stars'] for r in gh)} total stars")
     except Exception as e:
         errors.append(f"GitHub: {e}")
         gh = []
+
+    try:
+        gh_ext = poll_external_repos(EXTERNAL_SCOPE)
+        if gh_ext:
+            print(f"  GitHub (external): {len(gh_ext)} repos across {len(EXTERNAL_SCOPE.get('orgs', []))} org(s) + {len(EXTERNAL_SCOPE.get('repos', []))} individual repo(s)")
+    except Exception as e:
+        errors.append(f"GitHub external: {e}")
+        gh_ext = []
+    gh = gh + gh_ext
 
     try:
         zn = poll_zenodo()
