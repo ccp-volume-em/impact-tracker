@@ -113,7 +113,12 @@ def mermaid_line(title: str, dates: list[str], series: dict[str, list[int]]) -> 
 def gh_table(repos: list[dict]) -> str:
     if not repos:
         return "_No repos._"
-    repos = sorted(repos, key=lambda r: r.get("stars", 0) or 0, reverse=True)
+    # Sort by team commits (primary), then stars (tiebreak), both descending.
+    repos = sorted(
+        repos,
+        key=lambda r: (r.get("team_commits", 0) or 0, r.get("stars", 0) or 0),
+        reverse=True,
+    )
     lines = [
         "| Repo | Stars | Forks | Watchers | Open issues | Team commits | Last push |",
         "|---|---:|---:|---:|---:|---:|---|",
