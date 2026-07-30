@@ -138,43 +138,77 @@ def poll_github() -> list[dict]:
     return repos
 
 
-def poll_external_repos(scope: dict) -> list[dict]:
-    """Fetch stats for repos configured under external_scope.
+def find_org_repos_with_team_commits(team: list[str], orgs: list[str]) -> set[str]:
+    """For each configured org, return the set of 'owner/name' repos that at
+    least one team member has committed to. Uses the /search/commits API.
+    """
+    if not team or not orgs:
+        return set()
+    headers = {
+        **_gh_headers(),
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    found: set[str] = set()
+    for u in team:
+        for org in orgs:
+            page = 1
+            while page <= 10:  # cap safety net: 1000 commits/user/org
+                try:
+                    r = requests.get(
+                        "https://api.github.com/search/commits",
+                        params={"q": f"author:{u} org:{org}", "per_page": 100, "page": page},
+                        headers={**UA, **headers},
+                        timeout=TIMEOUT,
+                    )
+                except requests.RequestException as e:
+                    print(f"    Discover repos: {u}@{org} -> {e}")
+                    break
+                if not r.ok:
+                    print(f"    Discover repos: {u}@{org} -> HTTP {r.status_code}")
+                    break
+                items = r.json().get("items", []) or []
+                for item in items:
+                    fn = (item.get("repository") or {}).get("full_name")
+                    if fn:
+                        found.add(fn)
+                if len(items) < 100:
+                    break
+                page += 1
+                time.sleep(2.2)
+            time.sleep(2.2)
+    return found
 
-    Org-listed repos get labelled with the org name. Individually listed repos
-    get the label 'other'. Contributor stats are skipped here to keep the run
-    time reasonable.
+
+def poll_external_repos(scope: dict, team: list[str]) -> list[dict]:
+    """Fetch stats for external repos.
+
+    For each org in scope.orgs, only include repos that at least one team
+    member has committed to (discovered via search/commits). Individually
+    listed repos in scope.repos are always included.
     """
     headers = _gh_headers()
     repos: list[dict] = []
-    for org in scope.get("orgs", []) or []:
-        page = 1
-        while True:
-            try:
-                batch = _get(
-                    f"https://api.github.com/orgs/{org}/repos?per_page=100&page={page}",
-                    headers=headers,
-                )
-            except requests.HTTPError as e:
-                code = e.response.status_code if e.response is not None else "?"
-                print(f"    External org {org} -> HTTP {code}")
-                break
-            if not batch:
-                break
-            for r in batch:
-                repos.append(_format_repo(r, org))
-            if len(batch) < 100:
-                break
-            page += 1
+
+    discovered = find_org_repos_with_team_commits(team, scope.get("orgs", []) or [])
+    for full_name in sorted(discovered):
+        if "/" not in full_name:
+            continue
+        owner, name = full_name.split("/", 1)
+        try:
+            r = _get(f"https://api.github.com/repos/{owner}/{name}", headers=headers)
+        except requests.HTTPError as e:
+            code = e.response.status_code if e.response is not None else "?"
+            print(f"    External repo {full_name} -> HTTP {code}")
+            continue
+        repos.append(_format_repo(r, owner))
+
     for full_name in scope.get("repos", []) or []:
         if "/" not in full_name:
             continue
         owner, name = full_name.split("/", 1)
         try:
-            r = _get(
-                f"https://api.github.com/repos/{owner}/{name}",
-                headers=headers,
-            )
+            r = _get(f"https://api.github.com/repos/{owner}/{name}", headers=headers)
         except requests.HTTPError as e:
             code = e.response.status_code if e.response is not None else "?"
             print(f"    External repo {full_name} -> HTTP {code}")
@@ -393,7 +427,53 @@ def poll_quay(images: list[str]) -> list[dict]:
     return rows
 
 
-# ---------- Team commits (across configured external scope) ----------
+# ---------- Team commits per displayed repo ----------
+def annotate_team_commits(repos: list[dict], team: list[str]) -> None:
+    """For each repo, compute commits by each team member.
+
+    Mutates each repo dict in place, adding:
+      - team_commits: int (sum across team)
+      - team_commits_by_user: {username: count}
+
+    Uses /search/commits with `author:USER repo:owner/name`. Search API allows
+    30 req/min authenticated; we sleep 2.2s between calls.
+    """
+    if not team or not repos:
+        for r in repos:
+            r["team_commits"] = 0
+            r["team_commits_by_user"] = {}
+        return
+    headers = {
+        **_gh_headers(),
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    for repo in repos:
+        full_name = repo.get("full_name") or f"{repo.get('org','')}/{repo['name']}"
+        by_user: dict[str, int] = {}
+        total = 0
+        for u in team:
+            try:
+                r = requests.get(
+                    "https://api.github.com/search/commits",
+                    params={"q": f"author:{u} repo:{full_name}", "per_page": 1},
+                    headers={**UA, **headers},
+                    timeout=TIMEOUT,
+                )
+            except requests.RequestException as e:
+                print(f"    Team commits: {u}@{full_name} -> {e}")
+                continue
+            if not r.ok:
+                print(f"    Team commits: {u}@{full_name} -> HTTP {r.status_code}")
+                continue
+            n = r.json().get("total_count", 0)
+            by_user[u] = n
+            total += n
+            time.sleep(2.2)
+        repo["team_commits"] = total
+        repo["team_commits_by_user"] = by_user
+
+
 def poll_team_commits(usernames: list[str], scope: dict) -> list[dict]:
     """Public commits per team member within the configured scope.
 
@@ -495,13 +575,25 @@ def main() -> int:
         gh = []
 
     try:
-        gh_ext = poll_external_repos(EXTERNAL_SCOPE)
+        gh_ext = poll_external_repos(EXTERNAL_SCOPE, TEAM_MEMBERS)
         if gh_ext:
-            print(f"  GitHub (external): {len(gh_ext)} repos across {len(EXTERNAL_SCOPE.get('orgs', []))} org(s) + {len(EXTERNAL_SCOPE.get('repos', []))} individual repo(s)")
+            n_orgs = len(EXTERNAL_SCOPE.get("orgs", []) or [])
+            n_indiv = len(EXTERNAL_SCOPE.get("repos", []) or [])
+            print(
+                f"  GitHub (external): {len(gh_ext)} repos "
+                f"(from {n_orgs} org(s) filtered to team-touched + {n_indiv} explicit repo(s))"
+            )
     except Exception as e:
         errors.append(f"GitHub external: {e}")
         gh_ext = []
     gh = gh + gh_ext
+
+    try:
+        annotate_team_commits(gh, TEAM_MEMBERS)
+        tc_total = sum(r.get("team_commits", 0) for r in gh)
+        print(f"  Team commits: {tc_total} across {len(gh)} repos, {len(TEAM_MEMBERS)} members")
+    except Exception as e:
+        errors.append(f"Team commit annotation: {e}")
 
     try:
         zn = poll_zenodo()
