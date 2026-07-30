@@ -70,8 +70,21 @@ def _gh_headers() -> dict:
     return {"Authorization": f"Bearer {token}"} if token else {}
 
 
-def _gh_contributor_stats(owner: str, repo: str) -> tuple[int, int, int]:
-    """Return (commits, lines_added, lines_deleted) for a repo.
+_EMPTY_STATS = {
+    "commits": 0,
+    "lines_added": 0,
+    "lines_deleted": 0,
+    "team_lines_added": 0,
+    "team_lines_deleted": 0,
+}
+
+
+def _gh_contributor_stats(owner: str, repo: str, team: list[str] | None = None) -> dict:
+    """Return commit / line stats for a repo, both total and team-filtered.
+
+    Keys returned:
+      - commits, lines_added, lines_deleted: across ALL contributors
+      - team_lines_added, team_lines_deleted: restricted to `team` (case-insensitive)
 
     The contributors-stats endpoint returns 202 while GitHub computes the
     aggregate; retry a few times, then give up quietly (returning zeros).
@@ -83,15 +96,30 @@ def _gh_contributor_stats(owner: str, repo: str) -> tuple[int, int, int]:
             time.sleep(2 * (attempt + 1))
             continue
         if r.status_code == 204:  # empty repo
-            return (0, 0, 0)
+            return dict(_EMPTY_STATS)
         r.raise_for_status()
         data = r.json()
         commits = sum(c.get("total", 0) for c in data)
         added = sum(w.get("a", 0) for c in data for w in c.get("weeks", []))
         deleted = sum(w.get("d", 0) for c in data for w in c.get("weeks", []))
-        return commits, added, deleted
+        team_set = {u.lower() for u in (team or [])}
+        team_added = team_deleted = 0
+        if team_set:
+            for c in data:
+                login = ((c.get("author") or {}).get("login") or "").lower()
+                if login in team_set:
+                    for w in c.get("weeks", []):
+                        team_added += w.get("a", 0) or 0
+                        team_deleted += w.get("d", 0) or 0
+        return {
+            "commits": commits,
+            "lines_added": added,
+            "lines_deleted": deleted,
+            "team_lines_added": team_added,
+            "team_lines_deleted": team_deleted,
+        }
     print(f"    {repo}: contributor stats not ready after retries", flush=True)
-    return (0, 0, 0)
+    return dict(_EMPTY_STATS)
 
 
 def _format_repo(r: dict, org_label: str, *, with_stats: bool = False) -> dict:
@@ -111,10 +139,8 @@ def _format_repo(r: dict, org_label: str, *, with_stats: bool = False) -> dict:
     }
     if with_stats:
         owner = (r.get("owner") or {}).get("login") or org_label
-        commits, added, deleted = _gh_contributor_stats(owner, r["name"])
-        d["commits"] = commits
-        d["lines_added"] = added
-        d["lines_deleted"] = deleted
+        stats = _gh_contributor_stats(owner, r["name"], team=TEAM_MEMBERS)
+        d.update(stats)
     return d
 
 
@@ -201,7 +227,7 @@ def poll_external_repos(scope: dict, team: list[str]) -> list[dict]:
             code = e.response.status_code if e.response is not None else "?"
             print(f"    External repo {full_name} -> HTTP {code}")
             continue
-        repos.append(_format_repo(r, owner))
+        repos.append(_format_repo(r, owner, with_stats=True))
 
     for full_name in scope.get("repos", []) or []:
         if "/" not in full_name:
@@ -213,7 +239,7 @@ def poll_external_repos(scope: dict, team: list[str]) -> list[dict]:
             code = e.response.status_code if e.response is not None else "?"
             print(f"    External repo {full_name} -> HTTP {code}")
             continue
-        repos.append(_format_repo(r, "other"))
+        repos.append(_format_repo(r, "other", with_stats=True))
     return repos
 
 
