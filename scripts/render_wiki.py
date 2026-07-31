@@ -288,7 +288,7 @@ def build() -> None:
         total_pulls = sum(q.get("pulls", 0) for q in quay_images)
         parts.append(f"_Total pulls across tracked images: **{fmt(total_pulls)}**._\n")
         lines = [
-            "| Image | Pulls | Tags | Total size | Last modified |",
+            "| Image | Pulls | Tags | Latest tag size | Last modified |",
             "|---|---:|---:|---:|---|",
         ]
         for q in sorted(quay_images, key=lambda x: x.get("pulls", 0), reverse=True):

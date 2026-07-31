@@ -432,10 +432,30 @@ def poll_quay(images: list[str]) -> list[dict]:
         elif pulls == 0 and isinstance(pop, list):
             pulls = int(sum(x for x in pop if isinstance(x, (int, float))))
 
-        total_size = sum((t.get("size") or 0) for t in tags if isinstance(t, dict))
-        last_modified = data.get("last_modified") or max(
-            (t.get("last_modified") or "" for t in tags if isinstance(t, dict)),
-            default="",
+        # Size of the *most recently modified* tag — summing across every tag
+        # double-counts shared image layers and gives misleading GB numbers.
+        # Quay uses different field names in different responses, so try a few.
+        def _tag_size(t: dict) -> int:
+            for k in ("size", "manifest_size", "image_size", "compressed_size"):
+                v = t.get(k)
+                if isinstance(v, (int, float)) and v > 0:
+                    return int(v)
+            return 0
+
+        dict_tags = [t for t in tags if isinstance(t, dict)]
+        latest_tag = max(
+            dict_tags,
+            key=lambda t: t.get("last_modified") or "",
+            default=None,
+        )
+        total_size = _tag_size(latest_tag) if latest_tag else 0
+        if latest_tag and total_size == 0:
+            print(
+                f"    Quay {image}: latest tag has no recognised size field; keys={sorted(latest_tag.keys())}",
+                flush=True,
+            )
+        last_modified = data.get("last_modified") or (
+            (latest_tag or {}).get("last_modified") or ""
         )
         rows.append(
             {
