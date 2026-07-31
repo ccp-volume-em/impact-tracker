@@ -432,15 +432,32 @@ def poll_quay(images: list[str]) -> list[dict]:
         elif pulls == 0 and isinstance(pop, list):
             pulls = int(sum(x for x in pop if isinstance(x, (int, float))))
 
-        # Size of the *most recently modified* tag — summing across every tag
-        # double-counts shared image layers and gives misleading GB numbers.
-        # Quay uses different field names in different responses, so try a few.
-        def _tag_size(t: dict) -> int:
+        # Size of the *most recently modified* tag. When Quay reports None or 0
+        # (multi-arch manifest list — the tag points to a list of per-arch
+        # manifests, each with its own size), fall back to
+        # /api/v1/repository/{ns}/{name}/tag/{tag}/images which lists layers.
+        def _tag_size_direct(t: dict) -> int | None:
             for k in ("size", "manifest_size", "image_size", "compressed_size"):
                 v = t.get(k)
-                if isinstance(v, (int, float)) and v > 0:
+                if isinstance(v, (int, float)):
                     return int(v)
-            return 0
+            return None
+
+        def _tag_size_from_images(tag_name: str) -> int:
+            try:
+                imgs = _get(
+                    f"https://quay.io/api/v1/repository/{ns}/{name}/tag/{tag_name}/images",
+                    headers={"X-Requested-With": "XMLHttpRequest"},
+                )
+            except requests.HTTPError as e:
+                print(
+                    f"    Quay {image}: images endpoint for tag {tag_name} -> "
+                    f"HTTP {e.response.status_code if e.response is not None else '?'}",
+                    flush=True,
+                )
+                return 0
+            layers = imgs.get("images") or []
+            return sum(int(layer.get("size") or 0) for layer in layers)
 
         dict_tags = [t for t in tags if isinstance(t, dict)]
         latest_tag = max(
@@ -448,12 +465,20 @@ def poll_quay(images: list[str]) -> list[dict]:
             key=lambda t: t.get("last_modified") or "",
             default=None,
         )
-        total_size = _tag_size(latest_tag) if latest_tag else 0
-        if latest_tag and total_size == 0:
-            print(
-                f"    Quay {image}: latest tag has no recognised size field; keys={sorted(latest_tag.keys())}",
-                flush=True,
-            )
+        total_size = 0
+        if latest_tag:
+            direct = _tag_size_direct(latest_tag)
+            if direct and direct > 0:
+                total_size = direct
+            else:
+                # Either None (multi-arch) or 0. Try the images endpoint.
+                tag_name = latest_tag.get("name")
+                if tag_name:
+                    print(
+                        f"    Quay {image}: tag {tag_name} size={direct!r}, falling back to images endpoint",
+                        flush=True,
+                    )
+                    total_size = _tag_size_from_images(tag_name)
         last_modified = data.get("last_modified") or (
             (latest_tag or {}).get("last_modified") or ""
         )
