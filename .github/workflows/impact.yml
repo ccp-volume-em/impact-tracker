@@ -2,8 +2,9 @@ name: Daily impact poll
 
 on:
   schedule:
-    # Every day at 06:00 UTC
-    - cron: "0 6 * * *"
+    # Every day at 06:13 UTC — offset from the top of the hour to avoid
+    # the cron-scheduler traffic jam where GitHub silently drops overload.
+    - cron: "13 6 * * *"
   workflow_dispatch: {}  # allow manual runs
 
 permissions:
