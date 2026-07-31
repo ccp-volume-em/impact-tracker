@@ -14,7 +14,22 @@ Layout of the generated page:
 from __future__ import annotations
 
 import json
+from email.utils import parsedate_to_datetime
 from pathlib import Path
+
+
+def fmt_date(s: str) -> str:
+    """Return a YYYY-MM-DD string from either ISO 8601 or RFC 2822 input."""
+    if not s:
+        return ""
+    # ISO 8601 (GitHub, Zenodo, YouTube) — first 10 chars are the date.
+    if len(s) >= 10 and s[4] == "-" and s[7] == "-":
+        return s[:10]
+    # RFC 2822 (Quay.io: "Tue, 28 Apr 2026 09:12:34 -0000").
+    try:
+        return parsedate_to_datetime(s).date().isoformat()
+    except (TypeError, ValueError):
+        return s[:16]
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 HISTORY = REPO_ROOT / "data" / "history.json"
@@ -280,7 +295,7 @@ def build() -> None:
             lines.append(
                 f"| [{q['image']}]({q['url']}) | {fmt(q.get('pulls', 0))} | "
                 f"{fmt(q.get('num_tags', 0))} | {fmt_bytes(q.get('total_size_bytes', 0))} | "
-                f"{(q.get('last_modified') or '')[:19]} |"
+                f"{fmt_date(q.get('last_modified'))} |"
             )
         parts.append("\n".join(lines))
 
