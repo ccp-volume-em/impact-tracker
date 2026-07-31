@@ -432,10 +432,11 @@ def poll_quay(images: list[str]) -> list[dict]:
         elif pulls == 0 and isinstance(pop, list):
             pulls = int(sum(x for x in pop if isinstance(x, (int, float))))
 
-        # Size of the *most recently modified* tag. When Quay reports None or 0
-        # (multi-arch manifest list — the tag points to a list of per-arch
-        # manifests, each with its own size), fall back to
-        # /api/v1/repository/{ns}/{name}/tag/{tag}/images which lists layers.
+        # Size of the *most recently modified* tag. Quay returns None for
+        # multi-arch manifest lists (tag points to per-arch manifests, each
+        # with its own size); resolving that requires an authenticated
+        # /tag/{name}/images call. We don't set up Quay auth in this template,
+        # so we store None and render "—" in the wiki for those tags.
         def _tag_size_direct(t: dict) -> int | None:
             for k in ("size", "manifest_size", "image_size", "compressed_size"):
                 v = t.get(k)
@@ -443,42 +444,21 @@ def poll_quay(images: list[str]) -> list[dict]:
                     return int(v)
             return None
 
-        def _tag_size_from_images(tag_name: str) -> int:
-            try:
-                imgs = _get(
-                    f"https://quay.io/api/v1/repository/{ns}/{name}/tag/{tag_name}/images",
-                    headers={"X-Requested-With": "XMLHttpRequest"},
-                )
-            except requests.HTTPError as e:
-                print(
-                    f"    Quay {image}: images endpoint for tag {tag_name} -> "
-                    f"HTTP {e.response.status_code if e.response is not None else '?'}",
-                    flush=True,
-                )
-                return 0
-            layers = imgs.get("images") or []
-            return sum(int(layer.get("size") or 0) for layer in layers)
-
         dict_tags = [t for t in tags if isinstance(t, dict)]
         latest_tag = max(
             dict_tags,
             key=lambda t: t.get("last_modified") or "",
             default=None,
         )
-        total_size = 0
+        total_size: int | None = None
         if latest_tag:
-            direct = _tag_size_direct(latest_tag)
-            if direct and direct > 0:
-                total_size = direct
-            else:
-                # Either None (multi-arch) or 0. Try the images endpoint.
-                tag_name = latest_tag.get("name")
-                if tag_name:
-                    print(
-                        f"    Quay {image}: tag {tag_name} size={direct!r}, falling back to images endpoint",
-                        flush=True,
-                    )
-                    total_size = _tag_size_from_images(tag_name)
+            total_size = _tag_size_direct(latest_tag)
+            if total_size is None:
+                print(
+                    f"    Quay {image}: tag {latest_tag.get('name')} is multi-arch "
+                    f"(size unavailable without auth)",
+                    flush=True,
+                )
         last_modified = data.get("last_modified") or (
             (latest_tag or {}).get("last_modified") or ""
         )

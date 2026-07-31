@@ -44,7 +44,9 @@ def fmt(n) -> str:
         return str(n or 0)
 
 
-def fmt_bytes(b: int) -> str:
+def fmt_bytes(b) -> str:
+    if b is None:
+        return "—"
     for unit, div in [("TB", 1e12), ("GB", 1e9), ("MB", 1e6), ("kB", 1e3)]:
         if b >= div:
             return f"{b / div:,.2f} {unit}"
