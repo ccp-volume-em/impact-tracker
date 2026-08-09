@@ -17731,6 +17731,802 @@
           }
         ]
       }
+    },
+    {
+      "date": "2026-08-09",
+      "github": {
+        "repos": [
+          {
+            "name": "muvis-align",
+            "full_name": "ccp-volume-em/muvis-align",
+            "url": "https://github.com/ccp-volume-em/muvis-align",
+            "org": "ccp-volume-em",
+            "stars": 6,
+            "forks": 0,
+            "watchers": 6,
+            "open_issues": 4,
+            "size_kb": 47769,
+            "pushed_at": "2026-08-06T15:04:49Z",
+            "archived": false,
+            "description": "Image registration using multiview-stitcher",
+            "commits": 700,
+            "lines_added": 69384,
+            "lines_deleted": 39591,
+            "team_lines_added": 69354,
+            "team_lines_deleted": 39565,
+            "team_commits": 727,
+            "team_commits_by_user": {
+              "folterj": 727,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 0,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "guide",
+            "full_name": "ccp-volume-em/guide",
+            "url": "https://github.com/ccp-volume-em/guide",
+            "org": "ccp-volume-em",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 2,
+            "size_kb": 739,
+            "pushed_at": "2026-07-29T12:06:57Z",
+            "archived": false,
+            "description": "Community good practice guide",
+            "commits": 23,
+            "lines_added": 1284,
+            "lines_deleted": 105,
+            "team_lines_added": 1284,
+            "team_lines_deleted": 105,
+            "team_commits": 24,
+            "team_commits_by_user": {
+              "folterj": 17,
+              "M-A-Demir": 4,
+              "martlj": 0,
+              "piperfw": 3,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "unstitched-tiles-storage",
+            "full_name": "ccp-volume-em/unstitched-tiles-storage",
+            "url": "https://github.com/ccp-volume-em/unstitched-tiles-storage",
+            "org": "ccp-volume-em",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "open_issues": 0,
+            "size_kb": 61,
+            "pushed_at": "2026-03-14T10:28:03Z",
+            "archived": false,
+            "description": null,
+            "commits": 11,
+            "lines_added": 698,
+            "lines_deleted": 215,
+            "team_lines_added": 698,
+            "team_lines_deleted": 215,
+            "team_commits": 12,
+            "team_commits_by_user": {
+              "folterj": 12,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 0,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "omexml_notebooks",
+            "full_name": "ccp-volume-em/omexml_notebooks",
+            "url": "https://github.com/ccp-volume-em/omexml_notebooks",
+            "org": "ccp-volume-em",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 10,
+            "pushed_at": "2026-03-13T10:16:09Z",
+            "archived": false,
+            "description": null,
+            "commits": 3,
+            "lines_added": 752,
+            "lines_deleted": 0,
+            "team_lines_added": 208,
+            "team_lines_deleted": 0,
+            "team_commits": 1,
+            "team_commits_by_user": {
+              "folterj": 1,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 0,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "show-and-tell",
+            "full_name": "ccp-volume-em/show-and-tell",
+            "url": "https://github.com/ccp-volume-em/show-and-tell",
+            "org": "ccp-volume-em",
+            "stars": 2,
+            "forks": 0,
+            "watchers": 2,
+            "open_issues": 0,
+            "size_kb": 4034,
+            "pushed_at": "2026-04-21T07:41:15Z",
+            "archived": false,
+            "description": "Show and Tell Webinar Series by CCP-volumeEM",
+            "commits": 5,
+            "lines_added": 725,
+            "lines_deleted": 18,
+            "team_lines_added": 725,
+            "team_lines_deleted": 18,
+            "team_commits": 5,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 5,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "impact-tracker",
+            "full_name": "ccp-volume-em/impact-tracker",
+            "url": "https://github.com/ccp-volume-em/impact-tracker",
+            "org": "ccp-volume-em",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 95,
+            "pushed_at": "2026-08-08T07:16:47Z",
+            "archived": false,
+            "description": "Tracking views, downloads, and other interactions across CCP-volumeEM output channels",
+            "commits": 56,
+            "lines_added": 20135,
+            "lines_deleted": 326,
+            "team_lines_added": 2399,
+            "team_lines_deleted": 325,
+            "team_commits": 24,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 0,
+              "martlj": 24,
+              "piperfw": 0,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "empanada-napari",
+            "full_name": "volume-em/empanada-napari",
+            "url": "https://github.com/volume-em/empanada-napari",
+            "org": "volume-em",
+            "stars": 34,
+            "forks": 17,
+            "watchers": 4,
+            "open_issues": 27,
+            "size_kb": 8883,
+            "pushed_at": "2026-08-03T17:42:52Z",
+            "archived": false,
+            "description": "Panoptic segmentation algorithms for 2D and 3D electron microscopy in napari",
+            "commits": 74,
+            "lines_added": 16515,
+            "lines_deleted": 2135,
+            "team_lines_added": 3666,
+            "team_lines_deleted": 1279,
+            "team_commits": 2,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 2,
+              "martlj": 0,
+              "piperfw": 0,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "empanada-napari-docs",
+            "full_name": "volume-em/empanada-napari-docs",
+            "url": "https://github.com/volume-em/empanada-napari-docs",
+            "org": "volume-em",
+            "stars": 1,
+            "forks": 1,
+            "watchers": 1,
+            "open_issues": 0,
+            "size_kb": 285584,
+            "pushed_at": "2026-08-07T09:27:36Z",
+            "archived": false,
+            "description": "Documentation for empanada-napari (https://github.com/volume-em/empanada-napari)",
+            "commits": 59,
+            "lines_added": 37641,
+            "lines_deleted": 33651,
+            "team_lines_added": 193,
+            "team_lines_deleted": 112,
+            "team_commits": 10,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 10,
+              "martlj": 0,
+              "piperfw": 0,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "mib-container",
+            "full_name": "rosalindfranklininstitute/mib-container",
+            "url": "https://github.com/rosalindfranklininstitute/mib-container",
+            "org": "other",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 75,
+            "pushed_at": "2026-06-11T05:58:20Z",
+            "archived": false,
+            "description": null,
+            "commits": 12,
+            "lines_added": 1074,
+            "lines_deleted": 217,
+            "team_lines_added": 1074,
+            "team_lines_deleted": 217,
+            "team_commits": 17,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 9,
+              "GMW99": 8
+            }
+          },
+          {
+            "name": "imod-container",
+            "full_name": "rosalindfranklininstitute/imod-container",
+            "url": "https://github.com/rosalindfranklininstitute/imod-container",
+            "org": "other",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 22,
+            "pushed_at": "2025-09-05T11:22:20Z",
+            "archived": false,
+            "description": "A docker container for IMOD (5.1.2 with CUDA 12) ",
+            "commits": 12,
+            "lines_added": 378,
+            "lines_deleted": 65,
+            "team_lines_added": 378,
+            "team_lines_deleted": 65,
+            "team_commits": 22,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 0,
+              "GMW99": 22
+            }
+          },
+          {
+            "name": "volume-segmantics-container",
+            "full_name": "rosalindfranklininstitute/volume-segmantics-container",
+            "url": "https://github.com/rosalindfranklininstitute/volume-segmantics-container",
+            "org": "other",
+            "stars": 0,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 22,
+            "pushed_at": "2026-04-28T08:49:03Z",
+            "archived": false,
+            "description": null,
+            "commits": 6,
+            "lines_added": 762,
+            "lines_deleted": 8,
+            "team_lines_added": 762,
+            "team_lines_deleted": 8,
+            "team_commits": 8,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 8,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "volume-em-container-documentation",
+            "full_name": "rosalindfranklininstitute/volume-em-container-documentation",
+            "url": "https://github.com/rosalindfranklininstitute/volume-em-container-documentation",
+            "org": "other",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 9753,
+            "pushed_at": "2026-04-29T10:52:36Z",
+            "archived": false,
+            "description": "User guide for the Rosalind Franklin Institute's volume electron microscopy software containers",
+            "commits": 44,
+            "lines_added": 2011,
+            "lines_deleted": 332,
+            "team_lines_added": 2011,
+            "team_lines_deleted": 332,
+            "team_commits": 46,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 46,
+              "GMW99": 0
+            }
+          },
+          {
+            "name": "fiji-mobie",
+            "full_name": "rosalindfranklininstitute/fiji-mobie",
+            "url": "https://github.com/rosalindfranklininstitute/fiji-mobie",
+            "org": "other",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 1,
+            "open_issues": 0,
+            "size_kb": 8,
+            "pushed_at": "2025-04-30T14:26:47Z",
+            "archived": false,
+            "description": "A container for Fiji and the MoBIE plugin.",
+            "commits": 3,
+            "lines_added": 289,
+            "lines_deleted": 1,
+            "team_lines_added": 289,
+            "team_lines_deleted": 1,
+            "team_commits": 5,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 0,
+              "GMW99": 5
+            }
+          },
+          {
+            "name": "napari-clemreg-empanada",
+            "full_name": "rosalindfranklininstitute/napari-clemreg-empanada",
+            "url": "https://github.com/rosalindfranklininstitute/napari-clemreg-empanada",
+            "org": "other",
+            "stars": 1,
+            "forks": 0,
+            "watchers": 0,
+            "open_issues": 0,
+            "size_kb": 16,
+            "pushed_at": "2025-08-08T14:55:06Z",
+            "archived": false,
+            "description": "A container for Napari with the Clemreg and Empanada plugins.",
+            "commits": 6,
+            "lines_added": 449,
+            "lines_deleted": 22,
+            "team_lines_added": 449,
+            "team_lines_deleted": 22,
+            "team_commits": 9,
+            "team_commits_by_user": {
+              "folterj": 0,
+              "M-A-Demir": 0,
+              "martlj": 0,
+              "piperfw": 0,
+              "GMW99": 9
+            }
+          }
+        ]
+      },
+      "zenodo": {
+        "records": [
+          {
+            "id": 21509841,
+            "doi": "10.5281/zenodo.21509841",
+            "title": "AI OnDemand (AIoD): An extendable, user-friendly framework for segmenting images at scale (CCP-volumeEM show and tell)",
+            "publication_date": "2026-07-23",
+            "url": "https://zenodo.org/records/21509841",
+            "views": 4,
+            "unique_views": 4,
+            "downloads": 1,
+            "unique_downloads": 1,
+            "version_downloads": 1,
+            "num_files": 1,
+            "total_bytes": 48003253
+          },
+          {
+            "id": 21063081,
+            "doi": "10.5281/zenodo.21063081",
+            "title": "Collaborative Computational Project for Volume Electron Microscopy (CCP-volumeEM) - Connecting People, Tools, and Data Across the Volume EM Community (Presented at STEP-UP 2026)",
+            "publication_date": "2026-06-30",
+            "url": "https://zenodo.org/records/21063081",
+            "views": 68,
+            "unique_views": 58,
+            "downloads": 53,
+            "unique_downloads": 48,
+            "version_downloads": 53,
+            "num_files": 2,
+            "total_bytes": 267504187
+          },
+          {
+            "id": 20917913,
+            "doi": "10.5281/zenodo.20917913",
+            "title": "muvis-align: building a registration pipeline for large data & next gen file format",
+            "publication_date": "2025-11-24",
+            "url": "https://zenodo.org/records/20917913",
+            "views": 10,
+            "unique_views": 6,
+            "downloads": 2,
+            "unique_downloads": 2,
+            "version_downloads": 2,
+            "num_files": 1,
+            "total_bytes": 1683916
+          },
+          {
+            "id": 20510740,
+            "doi": "10.5281/zenodo.20510740",
+            "title": "Summary of breakout discussions at the Inaugural CCP-volumeEM meeting",
+            "publication_date": "2026-06-02",
+            "url": "https://zenodo.org/records/20510740",
+            "views": 3,
+            "unique_views": 3,
+            "downloads": 6,
+            "unique_downloads": 4,
+            "version_downloads": 6,
+            "num_files": 1,
+            "total_bytes": 669166
+          },
+          {
+            "id": 20043357,
+            "doi": "10.5281/zenodo.20043357",
+            "title": "Good Practices for image analysis software (CCP-volumeEM show and tell)",
+            "publication_date": "2026-05-05",
+            "url": "https://zenodo.org/records/20043357",
+            "views": 48,
+            "unique_views": 48,
+            "downloads": 75,
+            "unique_downloads": 72,
+            "version_downloads": 75,
+            "num_files": 2,
+            "total_bytes": 7632919
+          },
+          {
+            "id": 19258127,
+            "doi": "10.5281/zenodo.19258127",
+            "title": "A brief introduction to the use of containers for reproducible image analysis",
+            "publication_date": "2026-02-24",
+            "url": "https://zenodo.org/records/19258127",
+            "views": 65,
+            "unique_views": 61,
+            "downloads": 96,
+            "unique_downloads": 77,
+            "version_downloads": 96,
+            "num_files": 3,
+            "total_bytes": 213852534
+          },
+          {
+            "id": 19257012,
+            "doi": "10.5281/zenodo.19257012",
+            "title": "From 3D Light to 3D Electron Microscopy - Workshop 4: Image Analysis",
+            "publication_date": "2026-03-27",
+            "url": "https://zenodo.org/records/19257012",
+            "views": 148,
+            "unique_views": 132,
+            "downloads": 329,
+            "unique_downloads": 200,
+            "version_downloads": 329,
+            "num_files": 3,
+            "total_bytes": 186322876
+          }
+        ]
+      },
+      "youtube": {
+        "channel": {
+          "id": "UC9XAsWS_i-Cb7BjOIwge72w",
+          "title": "CCP-volumeEM",
+          "subscribers": 53,
+          "total_views": 804,
+          "video_count": 17
+        },
+        "videos": [
+          {
+            "id": "2yWhYc0Ibhw",
+            "url": "https://www.youtube.com/watch?v=2yWhYc0Ibhw",
+            "title": "AI OnDemand:An extendable, user-friendly framework for segmenting images at scale with Cameron Shand",
+            "published_at": "2026-07-23T10:17:28Z",
+            "views": 42,
+            "likes": 3,
+            "comments": 0,
+            "duration_seconds": 3524
+          },
+          {
+            "id": "KWL4aMttIpw",
+            "url": "https://www.youtube.com/watch?v=KWL4aMttIpw",
+            "title": "Napari software for 3D segmentation with the napari-zelda plugin with Rocco D\u2019Antuono",
+            "published_at": "2026-07-21T10:37:51Z",
+            "views": 46,
+            "likes": 3,
+            "comments": 0,
+            "duration_seconds": 3565
+          },
+          {
+            "id": "HsqH6RAcJps",
+            "url": "https://www.youtube.com/watch?v=HsqH6RAcJps",
+            "title": "OME-Zarr: A next generation file format for FAIR bioimaging data with Chris Barnes",
+            "published_at": "2026-06-02T10:16:57Z",
+            "views": 71,
+            "likes": 1,
+            "comments": 0,
+            "duration_seconds": 3264
+          },
+          {
+            "id": "wzh4vfYqUqM",
+            "url": "https://www.youtube.com/watch?v=wzh4vfYqUqM",
+            "title": "Jupyter Notebooks for Shareable Research Outputs with Dr Piper Fowler-Wright",
+            "published_at": "2026-05-05T10:43:26Z",
+            "views": 52,
+            "likes": 2,
+            "comments": 0,
+            "duration_seconds": 3503
+          },
+          {
+            "id": "HHJJZ79KC4Y",
+            "url": "https://www.youtube.com/watch?v=HHJJZ79KC4Y",
+            "title": "Good practices for image analysis software with Dr Kimberly Meechan",
+            "published_at": "2026-03-25T10:17:39Z",
+            "views": 101,
+            "likes": 5,
+            "comments": 0,
+            "duration_seconds": 3728
+          },
+          {
+            "id": "E-piecECQVI",
+            "url": "https://www.youtube.com/watch?v=E-piecECQVI",
+            "title": "A brief introduction to the use of containers for reproducible image analysis with Dr Martin Jones",
+            "published_at": "2026-03-02T10:55:46Z",
+            "views": 94,
+            "likes": 1,
+            "comments": 0,
+            "duration_seconds": 3600
+          },
+          {
+            "id": "eEAu75JatOw",
+            "url": "https://www.youtube.com/watch?v=eEAu75JatOw",
+            "title": "46 years of CCP4 with Ivo Tews",
+            "published_at": "2026-01-29T14:03:05Z",
+            "views": 35,
+            "likes": 0,
+            "comments": 0,
+            "duration_seconds": 1036
+          },
+          {
+            "id": "rrAeExq9N7U",
+            "url": "https://www.youtube.com/watch?v=rrAeExq9N7U",
+            "title": "Workflow for the 'missing middle' in volume EM with Davi Bock",
+            "published_at": "2026-01-12T11:11:25Z",
+            "views": 87,
+            "likes": 3,
+            "comments": 0,
+            "duration_seconds": 428
+          },
+          {
+            "id": "LIykCqmFviM",
+            "url": "https://www.youtube.com/watch?v=LIykCqmFviM",
+            "title": "CCP for NMR Crystallography with Jonathan Yates",
+            "published_at": "2026-01-12T11:04:58Z",
+            "views": 30,
+            "likes": 3,
+            "comments": 0,
+            "duration_seconds": 840
+          },
+          {
+            "id": "GgLqM3BewR8",
+            "url": "https://www.youtube.com/watch?v=GgLqM3BewR8",
+            "title": "Our experience with CCP-EM with Sjors Scheres",
+            "published_at": "2026-01-09T12:55:32Z",
+            "views": 23,
+            "likes": 0,
+            "comments": 0,
+            "duration_seconds": 1338
+          },
+          {
+            "id": "x2MFa_fiE2Q",
+            "url": "https://www.youtube.com/watch?v=x2MFa_fiE2Q",
+            "title": "What might the future of CCP-volumeEM look like with Martin Jones and Matthew Hartley",
+            "published_at": "2026-01-09T12:30:57Z",
+            "views": 17,
+            "likes": 0,
+            "comments": 0,
+            "duration_seconds": 1229
+          },
+          {
+            "id": "ZrAnLNHHFUk",
+            "url": "https://www.youtube.com/watch?v=ZrAnLNHHFUk",
+            "title": "Current computational challenges in volumeEM with Michele Darrow",
+            "published_at": "2026-01-09T12:27:20Z",
+            "views": 35,
+            "likes": 1,
+            "comments": 0,
+            "duration_seconds": 775
+          },
+          {
+            "id": "DbV4hXNzrec",
+            "url": "https://www.youtube.com/watch?v=DbV4hXNzrec",
+            "title": "Maintaining open-source software for volume EM with Kimberly Meechan",
+            "published_at": "2025-12-15T14:42:26Z",
+            "views": 15,
+            "likes": 1,
+            "comments": 0,
+            "duration_seconds": 261
+          },
+          {
+            "id": "nqUqxyFwv5k",
+            "url": "https://www.youtube.com/watch?v=nqUqxyFwv5k",
+            "title": "Volume EM in the Peripheral Nervous System with Giulia Casal",
+            "published_at": "2025-12-15T14:25:35Z",
+            "views": 16,
+            "likes": 0,
+            "comments": 0,
+            "duration_seconds": 315
+          },
+          {
+            "id": "7uz4ouyZ8E0",
+            "url": "https://www.youtube.com/watch?v=7uz4ouyZ8E0",
+            "title": "Data management and analysis for large vEM images with Norman Rzepka",
+            "published_at": "2025-12-15T14:06:09Z",
+            "views": 13,
+            "likes": 2,
+            "comments": 0,
+            "duration_seconds": 306
+          },
+          {
+            "id": "MhjnwdK6c8U",
+            "url": "https://www.youtube.com/watch?v=MhjnwdK6c8U",
+            "title": "Setting the scene for CCP-volumeEM with Lucy Collinson",
+            "published_at": "2025-12-15T13:57:30Z",
+            "views": 72,
+            "likes": 2,
+            "comments": 0,
+            "duration_seconds": 1027
+          },
+          {
+            "id": "wakjVB5Lk3w",
+            "url": "https://www.youtube.com/watch?v=wakjVB5Lk3w",
+            "title": "'empanada: a napari plugin for facile segmentation in EM Images' with Kedar Narayan",
+            "published_at": "2025-12-15T13:43:53Z",
+            "views": 56,
+            "likes": 3,
+            "comments": 0,
+            "duration_seconds": 372
+          }
+        ]
+      },
+      "quay": {
+        "images": [
+          {
+            "image": "rosalindfranklininstitute/mib-container",
+            "url": "https://quay.io/repository/rosalindfranklininstitute/mib-container",
+            "is_public": true,
+            "description": "",
+            "pulls": 128,
+            "num_tags": 3,
+            "total_size_bytes": 8506062270,
+            "last_modified": "Tue, 28 Apr 2026 20:29:14 -0000"
+          },
+          {
+            "image": "rosalindfranklininstitute/imod-container",
+            "url": "https://quay.io/repository/rosalindfranklininstitute/imod-container",
+            "is_public": true,
+            "description": "",
+            "pulls": 54,
+            "num_tags": 2,
+            "total_size_bytes": 439583061,
+            "last_modified": "Fri, 05 Sep 2025 11:24:59 -0000"
+          },
+          {
+            "image": "rosalindfranklininstitute/fiji-mobie",
+            "url": "https://quay.io/repository/rosalindfranklininstitute/fiji-mobie",
+            "is_public": true,
+            "description": "",
+            "pulls": 71,
+            "num_tags": 2,
+            "total_size_bytes": 1516898487,
+            "last_modified": "Wed, 30 Apr 2025 14:23:22 -0000"
+          },
+          {
+            "image": "rosalindfranklininstitute/volume-segmantics",
+            "url": "https://quay.io/repository/rosalindfranklininstitute/volume-segmantics",
+            "is_public": true,
+            "description": "",
+            "pulls": 149,
+            "num_tags": 4,
+            "total_size_bytes": null,
+            "last_modified": "Tue, 28 Apr 2026 09:09:18 -0000"
+          },
+          {
+            "image": "rosalindfranklininstitute/napari-clemreg-empanada",
+            "url": "https://quay.io/repository/rosalindfranklininstitute/napari-clemreg-empanada",
+            "is_public": true,
+            "description": "",
+            "pulls": 73,
+            "num_tags": 2,
+            "total_size_bytes": 4008776280,
+            "last_modified": "Fri, 08 Aug 2025 15:28:35 -0000"
+          }
+        ]
+      },
+      "team_commits": {
+        "members": [
+          {
+            "username": "folterj",
+            "url": "https://github.com/folterj",
+            "total_commits": 0,
+            "per_scope": {
+              "org:volume-em": 0,
+              "repo:rosalindfranklininstitute/mib-container": 0,
+              "repo:rosalindfranklininstitute/imod-container": 0,
+              "repo:rosalindfranklininstitute/volume-segmantics-container": 0,
+              "repo:rosalindfranklininstitute/volume-em-container-documentation": 0,
+              "repo:rosalindfranklininstitute/fiji-mobie": 0,
+              "repo:rosalindfranklininstitute/napari-clemreg-empanada": 0
+            }
+          },
+          {
+            "username": "M-A-Demir",
+            "url": "https://github.com/M-A-Demir",
+            "total_commits": 12,
+            "per_scope": {
+              "org:volume-em": 12,
+              "repo:rosalindfranklininstitute/mib-container": 0,
+              "repo:rosalindfranklininstitute/imod-container": 0,
+              "repo:rosalindfranklininstitute/volume-segmantics-container": 0,
+              "repo:rosalindfranklininstitute/volume-em-container-documentation": 0,
+              "repo:rosalindfranklininstitute/fiji-mobie": 0,
+              "repo:rosalindfranklininstitute/napari-clemreg-empanada": 0
+            }
+          },
+          {
+            "username": "martlj",
+            "url": "https://github.com/martlj",
+            "total_commits": 0,
+            "per_scope": {
+              "org:volume-em": 0,
+              "repo:rosalindfranklininstitute/mib-container": 0,
+              "repo:rosalindfranklininstitute/imod-container": 0,
+              "repo:rosalindfranklininstitute/volume-segmantics-container": 0,
+              "repo:rosalindfranklininstitute/volume-em-container-documentation": 0,
+              "repo:rosalindfranklininstitute/fiji-mobie": 0,
+              "repo:rosalindfranklininstitute/napari-clemreg-empanada": 0
+            }
+          },
+          {
+            "username": "piperfw",
+            "url": "https://github.com/piperfw",
+            "total_commits": 63,
+            "per_scope": {
+              "org:volume-em": 0,
+              "repo:rosalindfranklininstitute/mib-container": 9,
+              "repo:rosalindfranklininstitute/imod-container": 0,
+              "repo:rosalindfranklininstitute/volume-segmantics-container": 8,
+              "repo:rosalindfranklininstitute/volume-em-container-documentation": 46,
+              "repo:rosalindfranklininstitute/fiji-mobie": 0,
+              "repo:rosalindfranklininstitute/napari-clemreg-empanada": 0
+            }
+          },
+          {
+            "username": "GMW99",
+            "url": "https://github.com/GMW99",
+            "total_commits": 44,
+            "per_scope": {
+              "org:volume-em": 0,
+              "repo:rosalindfranklininstitute/mib-container": 8,
+              "repo:rosalindfranklininstitute/imod-container": 22,
+              "repo:rosalindfranklininstitute/volume-segmantics-container": 0,
+              "repo:rosalindfranklininstitute/volume-em-container-documentation": 0,
+              "repo:rosalindfranklininstitute/fiji-mobie": 5,
+              "repo:rosalindfranklininstitute/napari-clemreg-empanada": 9
+            }
+          }
+        ]
+      }
     }
   ]
 }
