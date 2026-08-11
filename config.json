@@ -21,6 +21,7 @@
     ]
   },
   "quay_images": [
+    "ccp-volume-em/ilastik",
     "rosalindfranklininstitute/mib-container",
     "rosalindfranklininstitute/imod-container",
     "rosalindfranklininstitute/fiji-mobie",
