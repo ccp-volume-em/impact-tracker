@@ -17,7 +17,9 @@ Originally built for [CCP-volumeEM](https://github.com/ccp-volume-em) — but ev
 ## Output
 
 - **`data/history.json`** — append-only time series, one entry per run. Committed to `main` on each poll.
-- **Wiki `Impact` page** — regenerated each run with totals, week-over-week deltas, and per-source tables.
+- **Wiki `Impact` page** — regenerated each run with totals, deltas compared to the same time last week, and per-source tables.
+
+Polling is daily, so the delta column is not a change-since-last-poll figure: it compares the latest snapshot against the poll from roughly seven days earlier (the nearest one within two days, so a dropped scheduled run doesn't blank the column). Until the history covers a full week, the column shows `—`.
 
 ## Make your own
 

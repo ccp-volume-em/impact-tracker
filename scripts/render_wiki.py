@@ -5,7 +5,7 @@ GitHub Actions to push to the repo's wiki.
 Layout of the generated page:
   - Header + last poll date
   - Totals cards (as a compact table)
-  - Week-over-week deltas (with arrows)
+  - Deltas vs. the same time last week (with arrows)
   - Trend charts (Mermaid xychart-beta — renders natively on GitHub wikis)
   - GitHub repos table (latest snapshot)
   - Zenodo records table (latest snapshot)
@@ -14,6 +14,7 @@ Layout of the generated page:
 from __future__ import annotations
 
 import json
+from datetime import date, timedelta
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
@@ -35,6 +36,48 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 HISTORY = REPO_ROOT / "data" / "history.json"
 OUT_DIR = REPO_ROOT / "wiki_output"
 OUT = OUT_DIR / "Impact.md"
+
+# The poll runs daily, so the previous entry in history.json is yesterday.
+# Deltas compare against the same time last week instead: the poll nearest to
+# BASELINE_DAYS before the latest one, accepting a poll up to BASELINE_TOLERANCE_DAYS
+# either side of that target so a dropped scheduled run doesn't blank the column.
+BASELINE_DAYS = 7
+BASELINE_TOLERANCE_DAYS = 2
+
+
+def parse_poll_date(poll: dict) -> date | None:
+    try:
+        return date.fromisoformat((poll.get("date") or "")[:10])
+    except ValueError:
+        return None
+
+
+def week_ago_poll(polls: list[dict]) -> dict | None:
+    """Return the poll closest to a week before the latest one.
+
+    Returns None when history doesn't reach back far enough — an honest blank
+    beats a delta secretly measured over a shorter window.
+    """
+    if len(polls) < 2:
+        return None
+    latest_date = parse_poll_date(polls[-1])
+    if latest_date is None:
+        return None
+    target = latest_date - timedelta(days=BASELINE_DAYS)
+
+    best, best_gap = None, None
+    # Walk oldest-to-newest over everything before the latest poll, so that when
+    # two polls sit equally far from the target we keep the later (fresher) one.
+    for poll in polls[:-1]:
+        poll_date = parse_poll_date(poll)
+        if poll_date is None:
+            continue
+        gap = abs((poll_date - target).days)
+        if gap > BASELINE_TOLERANCE_DAYS:
+            continue
+        if best_gap is None or gap <= best_gap:
+            best, best_gap = poll, gap
+    return best
 
 
 def fmt(n) -> str:
@@ -91,7 +134,7 @@ def totals(poll: dict) -> dict:
     }
 
 
-def totals_table(cur: dict, prev: dict | None) -> str:
+def totals_table(cur: dict, prev: dict | None, baseline_date: str | None = None) -> str:
     rows = [
         ("GitHub repos", cur["repos"], (prev or {}).get("repos")),
         ("Zenodo records", cur["zenodo_records"], (prev or {}).get("zenodo_records")),
@@ -101,7 +144,10 @@ def totals_table(cur: dict, prev: dict | None) -> str:
         ("YouTube views", cur["youtube_views"], (prev or {}).get("youtube_views")),
         ("YouTube subscribers", cur["youtube_subs"], (prev or {}).get("youtube_subs")),
     ]
-    lines = ["| Metric | Value | Δ vs. previous |", "|---|---:|---:|"]
+    header = "Δ vs. same time last week"
+    if baseline_date:
+        header += f" ({baseline_date})"
+    lines = [f"| Metric | Value | {header} |", "|---|---:|---:|"]
     for label, val, prv in rows:
         lines.append(f"| {label} | {fmt(val)} | {delta(val, prv).strip() or '—'} |")
     return "\n".join(lines)
@@ -204,7 +250,7 @@ def build() -> None:
     if not polls:
         OUT.write_text(
             "# CCP-volumeEM Impact\n\n"
-            "_No polls recorded yet. The weekly workflow will populate this page._\n\n"
+            "_No polls recorded yet. The daily workflow will populate this page._\n\n"
             "Sources:\n"
             "- https://github.com/ccp-volume-em\n"
             "- https://zenodo.org/communities/ccp-volume-em/\n"
@@ -214,7 +260,9 @@ def build() -> None:
         return
 
     latest = polls[-1]
-    prev = polls[-2] if len(polls) >= 2 else None
+    # Baseline is the poll from a week ago, not yesterday's — the poll is daily.
+    prev = week_ago_poll(polls)
+    baseline_date = (prev or {}).get("date") or None
     cur_totals = totals(latest)
     prev_totals = totals(prev) if prev else None
 
@@ -222,7 +270,17 @@ def build() -> None:
     parts.append(f"# CCP-volumeEM Impact\n")
     parts.append(f"_Last polled: **{latest['date']}** · {len(polls)} poll(s) in history_\n")
     parts.append("## Totals\n")
-    parts.append(totals_table(cur_totals, prev_totals))
+    parts.append(totals_table(cur_totals, prev_totals, baseline_date))
+    if baseline_date:
+        parts.append(
+            f"\n_Δ compares the latest daily poll with the poll from the same time "
+            f"last week ({baseline_date})._\n"
+        )
+    else:
+        parts.append(
+            "\n_Δ is blank until the history covers a full week: the poll runs daily, "
+            "but deltas compare with the same time last week._\n"
+        )
 
     gh_repos = latest.get("github", {}).get("repos", []) or []
     zn_records = latest.get("zenodo", {}).get("records", []) or []
@@ -261,7 +319,7 @@ def build() -> None:
     parts.append("\n## GitHub repos\n")
     parts.append(
         f"_Team activity across all repos below: **{fmt(gh_team_commits_now)}** commits"
-        f"{(' ' + gh_team_delta) if gh_team_delta else ''} · "
+        f"{(' ' + gh_team_delta + ' vs. same time last week') if gh_team_delta else ''} · "
         f"**+{fmt(gh_team_added)}** / **−{fmt(gh_team_deleted)}** lines._\n"
     )
     parts.append(gh_table(gh_repos))
