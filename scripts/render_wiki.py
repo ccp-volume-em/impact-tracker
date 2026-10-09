@@ -36,6 +36,14 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 HISTORY = REPO_ROOT / "data" / "history.json"
 OUT_DIR = REPO_ROOT / "wiki_output"
 OUT = OUT_DIR / "Impact.md"
+CONFIG = json.loads((REPO_ROOT / "config.json").read_text())
+
+# Quay's daily stats count logged registry events, not pulls. One Apptainer pull
+# logs about three events (a Docker pull logs one), so the wiki divides the raw
+# counts by this factor. history.json keeps the raw counts.
+QUAY_EVENTS_PER_PULL = max(1, int(CONFIG.get("quay_events_per_pull", 1)))
+# Optional link (e.g. a tracking issue) explaining how approximate the pulls are.
+QUAY_PULLS_NOTE_URL: str = CONFIG.get("quay_pulls_note_url", "")
 
 # The poll runs daily, so the previous entry in history.json is yesterday.
 # Deltas compare against the same time last week instead: the poll nearest to
@@ -345,15 +353,31 @@ def build() -> None:
     if not quay_images:
         parts.append("_No Quay images configured._")
     else:
-        total_pulls = sum(q.get("pulls", 0) for q in quay_images)
-        parts.append(f"_Total pulls across tracked images: **{fmt(total_pulls)}**._\n")
+        def est_pulls(q: dict) -> int:
+            return round(q.get("pulls", 0) / QUAY_EVENTS_PER_PULL)
+
+        total_pulls = sum(est_pulls(q) for q in quay_images)
+        parts.append(f"_Total pulls across tracked images (approx.): **{fmt(total_pulls)}**._\n")
+        note = (
+            "> **Note:** Quay.io pull counts are only approximate. They come from Quay's "
+            "count of logged registry events over the last ~90 days, not from actual pulls"
+        )
+        if QUAY_EVENTS_PER_PULL > 1:
+            note += (
+                f", divided by {QUAY_EVENTS_PER_PULL} because one Apptainer pull logs "
+                f"about {QUAY_EVENTS_PER_PULL} events"
+            )
+        note += "."
+        if QUAY_PULLS_NOTE_URL:
+            note += f" [Details and planned fix]({QUAY_PULLS_NOTE_URL})."
+        parts.append(note + "\n")
         lines = [
-            "| Image | Pulls | Tags | Latest tag size | Last modified |",
+            "| Image | Pulls (approx.) | Tags | Latest tag size | Last modified |",
             "|---|---:|---:|---:|---|",
         ]
-        for q in sorted(quay_images, key=lambda x: x.get("pulls", 0), reverse=True):
+        for q in sorted(quay_images, key=est_pulls, reverse=True):
             lines.append(
-                f"| [{q['image']}]({q['url']}) | {fmt(q.get('pulls', 0))} | "
+                f"| [{q['image']}]({q['url']}) | {fmt(est_pulls(q))} | "
                 f"{fmt(q.get('num_tags', 0))} | {fmt_bytes(q.get('total_size_bytes', 0))} | "
                 f"{fmt_date(q.get('last_modified'))} |"
             )

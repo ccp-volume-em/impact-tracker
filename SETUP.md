@@ -59,6 +59,8 @@ Open `config.json` at the repo root. Every field is explained below.
 | `external_scope.orgs` | no | `["volume-em"]` | Additional GitHub orgs to check for team-member commits. Only repos with at least one team-member commit appear in the report. |
 | `external_scope.repos` | no | `["rosalindfranklininstitute/mib-container"]` | Individual repos (owner/name) to always include, regardless of team activity. |
 | `quay_images` | no | `["rosalindfranklininstitute/mib-container"]` | Public Quay.io images to track. Empty array skips Quay entirely. |
+| `quay_events_per_pull` | no | `3` | Quay counts registry events, not pulls. The wiki divides the raw counts by this number. Use `3` if your images are pulled with Apptainer and `1` (the default) for Docker. `history.json` keeps the raw counts. |
+| `quay_pulls_note_url` | no | `"https://github.com/your-org/impact-tracker/issues/2"` | Link added to the wiki's note that Quay pull counts are approximate, for example an issue tracking a better method. Leave it out to show the note without a link. |
 
 **To skip a source entirely**: set string fields to `""` and lists to `[]`. The poller detects empty configuration and skips silently.
 
