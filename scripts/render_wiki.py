@@ -42,6 +42,8 @@ CONFIG = json.loads((REPO_ROOT / "config.json").read_text())
 # logs about three events (a Docker pull logs one), so the wiki divides the raw
 # counts by this factor. history.json keeps the raw counts.
 QUAY_EVENTS_PER_PULL = max(1, int(CONFIG.get("quay_events_per_pull", 1)))
+# Optional link (e.g. a tracking issue) explaining how approximate the pulls are.
+QUAY_PULLS_NOTE_URL: str = CONFIG.get("quay_pulls_note_url", "")
 
 # The poll runs daily, so the previous entry in history.json is yesterday.
 # Deltas compare against the same time last week instead: the poll nearest to
@@ -355,14 +357,22 @@ def build() -> None:
             return round(q.get("pulls", 0) / QUAY_EVENTS_PER_PULL)
 
         total_pulls = sum(est_pulls(q) for q in quay_images)
-        parts.append(f"_Total pulls across tracked images: **{fmt(total_pulls)}**._\n")
+        parts.append(f"_Total pulls across tracked images (approx.): **{fmt(total_pulls)}**._\n")
+        note = (
+            "> **Note:** Quay.io pull counts are only approximate. They come from Quay's "
+            "count of logged registry events over the last ~90 days, not from actual pulls"
+        )
         if QUAY_EVENTS_PER_PULL > 1:
-            parts.append(
-                f"_Estimated: Quay's registry event counts for the last ~90 days, divided by "
-                f"{QUAY_EVENTS_PER_PULL} (events logged per Apptainer pull)._\n"
+            note += (
+                f", divided by {QUAY_EVENTS_PER_PULL} because one Apptainer pull logs "
+                f"about {QUAY_EVENTS_PER_PULL} events"
             )
+        note += "."
+        if QUAY_PULLS_NOTE_URL:
+            note += f" [Details and planned fix]({QUAY_PULLS_NOTE_URL})."
+        parts.append(note + "\n")
         lines = [
-            "| Image | Pulls | Tags | Latest tag size | Last modified |",
+            "| Image | Pulls (approx.) | Tags | Latest tag size | Last modified |",
             "|---|---:|---:|---:|---|",
         ]
         for q in sorted(quay_images, key=est_pulls, reverse=True):
