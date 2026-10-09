@@ -12,7 +12,7 @@ Originally built for [CCP-volumeEM](https://github.com/ccp-volume-em) — but ev
 | **GitHub team members** | Public commits by named users across a configurable scope (your org, other orgs, individual repos) | None |
 | **Zenodo community** | Per-record views, downloads, estimated bytes served | None |
 | **YouTube channel** | Channel subs, per-video views/likes/comments, view-weighted watch hours | Free YouTube Data API v3 key |
-| **Quay.io images** | Per-image pulls, tags, size, last modified | None |
+| **Quay.io images** | Per-image pulls (estimated from Quay's event counts over the last ~90 days; see `quay_events_per_pull` in [SETUP.md](SETUP.md)), tags, size, last modified | None |
 
 ## Output
 
