@@ -26,7 +26,8 @@
     "rosalindfranklininstitute/imod-container",
     "rosalindfranklininstitute/fiji-mobie",
     "rosalindfranklininstitute/volume-segmantics",
-    "rosalindfranklininstitute/napari-clemreg-empanada"
+    "rosalindfranklininstitute/napari-clemreg-empanada",
+    "ccp-volume-em/muvis-align-xpra"
   ],
   "quay_events_per_pull": 3,
   "quay_pulls_note_url": "https://github.com/ccp-volume-em/impact-tracker/issues/2"
